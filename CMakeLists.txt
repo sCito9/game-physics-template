@@ -85,6 +85,8 @@ add_executable(Template
 	src/Colormap.h
 	src/Colormap.cpp
 	src/PathFinder.cpp
+		Scenes/Scene_1.h
+		Scenes/Scene_1.cpp
 )
 
 if(UNIX AND NOT APPLE)
