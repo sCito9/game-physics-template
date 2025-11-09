@@ -1,5 +1,9 @@
 #pragma once
+#include <list>
+
+#include "MassPoint.h"
 #include "Renderer.h"
+#include "Spring.h"
 
 /// @brief Scene base class. **Run `cmake . -B build` after adding new files to the scenes folder**
 ///
@@ -24,4 +28,12 @@ public:
     /// @brief Define the GUI for the scene. Gets called every frame after onDraw.
     virtual void onGUI() {};
     virtual ~Scene() = default;
+
+    std::list<MassPoint*> massPoints = {};
+    std::list<Spring*> springs = {};
+    float timeStep = 0.005f;
+
+    void calculateEulerStep();
+    void calculateMidpointStep();
+    void computeCurrentForcesOnPoint(MassPoint* point);
 };
