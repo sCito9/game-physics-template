@@ -36,4 +36,9 @@ public:
     void calculateEulerStep();
     void calculateMidpointStep();
     void computeCurrentForcesOnPoint(MassPoint* point);
+
+    glm::mat4 cameraMatrix = glm::mat4(1);
+    glm::vec3 fwd = glm::vec3(1, 0, 0);
+    glm::vec3 right = glm::vec3(0, 1, 0);
+    glm::vec3 up = glm::vec3(0, 0, 1);
 };

@@ -7,9 +7,15 @@ void Scene::onDraw(Renderer &renderer)
     for (MassPoint* point : massPoints) {
         renderer.drawSphere(point->position, point->mass/100, {1, 0, 0, 1});
     }
+    auto cmap = Colormap("viridis");
     for (Spring* spring : springs) {
-        renderer.drawLine(spring->point1->position, spring->point2->position, {0, 0, 1});
+        renderer.drawLine(spring->point1->position, spring->point2->position, cmap((spring->getCurrentLength() / spring->restLength) * (spring->getCurrentLength() / spring->restLength)));
     }
+
+    cameraMatrix = renderer.camera.viewMatrix;
+    fwd = inverse(cameraMatrix) * glm::vec4(0, 0, 1, 0);
+    right = inverse(cameraMatrix) * glm::vec4(1, 0, 0, 0);
+    up = inverse(cameraMatrix) * glm::vec4(0, 1, 0, 0);
 }
 
 void Scene::calculateEulerStep() {

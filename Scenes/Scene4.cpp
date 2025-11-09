@@ -27,38 +27,43 @@ void Scene4::init() {
     massPoints.push_back(point9);
     massPoints.push_back(point10);
 
-    Spring* spring1 = new Spring(100, 1.5, point1, point2);
-    Spring* spring2 = new Spring(100, 1.5, point1, point3);
-    Spring* spring3 = new Spring(100, 1.5, point1, point4);
-    Spring* spring4 = new Spring(100, 1.5, point1, point5);
-    Spring* spring5 = new Spring(100, 2, point2, point3);
-    Spring* spring6 = new Spring(100, 2, point3, point4);
-    Spring* spring7 = new Spring(100, 2, point4, point5);
-    Spring* spring8 = new Spring(100, 2, point5, point2);
-    Spring* spring9 = new Spring(100, 2, point2, point6);
-    Spring* spring10 = new Spring(100, 2, point2, point7);
-    Spring* spring11 = new Spring(100, 2, point2, point9);
-    Spring* spring12 = new Spring(100, 2, point3, point6);
-    Spring* spring13 = new Spring(100, 2, point3, point7);
-    Spring* spring14 = new Spring(100, 2, point3, point8);
-    Spring* spring15 = new Spring(100, 2, point4, point7);
-    Spring* spring16 = new Spring(100, 2, point4, point8);
-    Spring* spring17 = new Spring(100, 2, point4, point9);
-    Spring* spring18 = new Spring(100, 2, point5, point8);
-    Spring* spring19 = new Spring(100, 2, point5, point9);
-    Spring* spring20 = new Spring(100, 2, point5, point6);
-    Spring* spring21 = new Spring(100, 2, point6, point7);
-    Spring* spring22 = new Spring(100, 2, point7, point8);
-    Spring* spring23 = new Spring(100, 2, point8, point9);
-    Spring* spring24 = new Spring(100, 2, point9, point6);
-    Spring* spring25 = new Spring(100, 1.5, point10, point6);
-    Spring* spring26 = new Spring(100, 1.5, point10, point7);
-    Spring* spring27 = new Spring(100, 1.5, point10, point8);
-    Spring* spring28 = new Spring(100, 1.5, point10, point9);
-    Spring* spring29 = new Spring(100, 2, point2, point4);
-    Spring* spring30 = new Spring(100, 2, point3, point5);
-    Spring* spring31 = new Spring(100, 2, point6, point8);
-    Spring* spring32 = new Spring(100, 2, point7, point9);
+    Spring* spring1 = new Spring(10000, 1.5, point1, point2);
+    Spring* spring2 = new Spring(10000, 1.5, point1, point3);
+    Spring* spring3 = new Spring(10000, 1.5, point1, point4);
+    Spring* spring4 = new Spring(10000, 1.5, point1, point5);
+    Spring* spring5 = new Spring(10000, 2, point2, point3);
+    Spring* spring6 = new Spring(10000, 2, point3, point4);
+    Spring* spring7 = new Spring(10000, 2, point4, point5);
+    Spring* spring8 = new Spring(10000, 2, point5, point2);
+    Spring* spring9 = new Spring(10000, 2, point2, point6);
+    Spring* spring10 = new Spring(10000, 2, point2, point7);
+    Spring* spring11 = new Spring(10000, 2, point2, point9);
+    Spring* spring12 = new Spring(10000, 2, point3, point6);
+    Spring* spring13 = new Spring(10000, 2, point3, point7);
+    Spring* spring14 = new Spring(10000, 2, point3, point8);
+    Spring* spring15 = new Spring(10000, 2, point4, point7);
+    Spring* spring16 = new Spring(10000, 2, point4, point8);
+    Spring* spring17 = new Spring(10000, 2, point4, point9);
+    Spring* spring18 = new Spring(10000, 2, point5, point8);
+    Spring* spring19 = new Spring(10000, 2, point5, point9);
+    Spring* spring20 = new Spring(10000, 2, point5, point6);
+    Spring* spring21 = new Spring(10000, 2, point6, point7);
+    Spring* spring22 = new Spring(10000, 2, point7, point8);
+    Spring* spring23 = new Spring(10000, 2, point8, point9);
+    Spring* spring24 = new Spring(10000, 2, point9, point6);
+    Spring* spring25 = new Spring(10000, 1.5, point10, point6);
+    Spring* spring26 = new Spring(10000, 1.5, point10, point7);
+    Spring* spring27 = new Spring(10000, 1.5, point10, point8);
+    Spring* spring28 = new Spring(10000, 1.5, point10, point9);
+    Spring* spring29 = new Spring(10000, 2, point2, point4);
+    Spring* spring30 = new Spring(10000, 2, point3, point5);
+    Spring* spring31 = new Spring(10000, 2, point6, point8);
+    Spring* spring32 = new Spring(10000, 2, point7, point9);
+    Spring* spring33 = new Spring(10000, 5, point1, point10);
+    Spring* spring34 = new Spring(10000, 3, point3, point9);
+    Spring* spring35 = new Spring(10000, 3, point4, point6);
+    Spring* spring36 = new Spring(10000, 3, point5, point7);
+    Spring* spring37 = new Spring(10000, 3, point2, point8);
     springs.push_back(spring1);
     springs.push_back(spring2);
     springs.push_back(spring3);
@@ -91,11 +96,19 @@ void Scene4::init() {
     springs.push_back(spring30);
     springs.push_back(spring31);
     springs.push_back(spring32);
+    springs.push_back(spring33);
+    springs.push_back(spring34);
+    springs.push_back(spring35);
+    springs.push_back(spring36);
+    springs.push_back(spring37);
 }
-
+bool shouldSimulate = true;
 void Scene4::onGUI() {
     ImGui::InputFloat("Timestep: ", &timeStep);
     ShowDropdownMenuForMethods();
+    if (ImGui::IsKeyPressed(ImGuiKey_Space)) {
+        shouldSimulate = !shouldSimulate;
+    }
 }
 
 static const char* methods[] = { "Euler Method", "Midpoint Method" }; // Options for the dropdown
@@ -118,6 +131,10 @@ void Scene4::ShowDropdownMenuForMethods() {
 }
 
 void Scene4::simulateStep() {
+    if (!shouldSimulate) {  //possibility to stop simulation
+        return;
+    }
+
     glm::vec3 gravity = {0, 0, -9.81f};
 
     for (MassPoint* point : massPoints) {
@@ -135,26 +152,67 @@ void Scene4::simulateStep() {
             break;
     }
 
+    //box boundaries
     for (MassPoint* point : massPoints) {
-        if (point->position.x > 2.5f) {
-            point->position.x = 2.5f;
-        }
-        else if (point->position.x < -2.5f) {
-            point->position.x = -2.5f;
-        }
+        if (point->position.x > 2.5f || point->position.x < -2.5f || point->position.y > 2.5f || point->position.y < -2.5f || point->position.z > 2.5f || point->position.z < -2.5f) {
+            point->velocity *= 0.5;    //reibung
 
-        if (point->position.y > 2.5f) {
-            point->position.y = 2.5f;
-        }
-        else if (point->position.y < -2.5f) {
-            point->position.y = -2.5f;
-        }
+            if (point->position.x > 2.5f) {
+                point->position.x = 2.5f;
+            }
+            else if (point->position.x < -2.5f) {
+                point->position.x = -2.5f;
+            }
 
-        if (point->position.z > 2.5f) {
-            point->position.z = 2.5f;
+            if (point->position.y > 2.5f) {
+                point->position.y = 2.5f;
+            }
+            else if (point->position.y < -2.5f) {
+                point->position.y = -2.5f;
+            }
+
+            if (point->position.z > 2.5f) {
+                point->position.z = 2.5f;
+            }
+            else if (point->position.z < -2.5f) {
+                point->position.z = -2.5f;
+            }
         }
-        else if (point->position.z < -2.5f) {
-            point->position.z = -2.5f;
+    }
+
+    //mouse interaction
+    if(ImGui::IsMouseReleased(ImGuiMouseButton_Right)){
+        auto drag = ImGui::GetMouseDragDelta(1);
+        if(!(drag.x == 0 && drag.y == 0)){
+            auto dx = drag.x * right;
+            auto dy = -drag.y * up;
+            for (MassPoint* point : massPoints) {
+                point->velocity += (dx + dy) * 0.01f;
+            }
         }
+    }
+}
+
+void Scene4::calculateMidpointStep() {  //with added gravity
+    glm::vec3 gravity = {0, 0, -9.81f};
+
+    for (MassPoint* point : massPoints) {
+        glm::vec3 midpointPos = point->position + timeStep/2 * point->velocity;
+
+        point->resetForces();
+        computeCurrentForcesOnPoint(point);
+        point->acceleration = point->force / point->mass + gravity;
+
+        glm::vec3 midpointVel = point->velocity + timeStep/2 * point->acceleration;
+
+        glm::vec3 tmp = point->position + timeStep/2 * midpointVel;
+        point->position = midpointPos;  //xtmp benutzen um neue forces zu berechnen
+
+        point->resetForces();   //a(t+h/2)
+        computeCurrentForcesOnPoint(point);
+        point->acceleration = point->force / point->mass + gravity;
+
+        point->position = tmp;
+        point->velocity += timeStep * point->acceleration;
     }
 }

@@ -17,6 +17,8 @@ public:
     void onGUI() override;
 
     virtual void simulateStep() override;
+
+    void calculateMidpointStep();
 };
 
 
