@@ -33,3 +33,18 @@ public:
 };
 
     static const float particleLifetime = 1.5f;
+
+    
+struct massPoint {
+    glm::vec3 x;
+    glm::vec3 v;
+    float mass;
+};
+
+struct spring {
+    float restLen;
+    float curLen;
+    float stiffness;
+    int mp0_index;
+    int mp1_index;
+};

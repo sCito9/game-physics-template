@@ -1,135 +1,114 @@
 #include "Scene1.h"
-#include <glm/gtx/quaternion.hpp>
 
-void Scene1::onDraw(Renderer& renderer){
-    renderer.drawWireCube(glm::vec3(0), glm::vec3(5), glm::vec3(1));
+void Scene1::init() {
+    massPoint mp0_euler;
+    mp0_euler.mass = 10.f;
+    mp0_euler.x = glm::vec3(0.f, 0.f, 0.f);
+    mp0_euler.v = glm::vec3(-1.f, 0.f, 0.f);
 
-    renderer.drawCube(  glm::vec3(0,0,0), 
-                        glm::quat(glm::vec3(pitch, roll, yaw)), // rotation now given via Euler angles
-                        glm::vec3(0.5,0.5,0.5), 
-                        glm::vec4(1,0,0,1));
+    massPoint mp0_midpoint;
+    mp0_midpoint.mass = 10.f;
+    mp0_midpoint.x = glm::vec3(0.f, 0.f, 0.f);
+    mp0_midpoint.v = glm::vec3(-1.f, 0.f, 0.f);
 
-    // Achsen und Rotation + deren Visualisierung
-    glm::mat4 rotation = glm::toMat4(glm::quat(glm::vec3(pitch, roll, yaw)));
-    glm::vec3 forward = glm::vec3(rotation * glm::vec4(0, 0, 1, 0));
-    glm::vec3 right = glm::vec3(rotation * glm::vec4(1, 0, 0, 0));
-    glm::vec3 up = glm::vec3(rotation * glm::vec4(0, 1, 0, 0));
+    massPoint mp1_euler;
+    mp1_euler.mass = 10.f;
+    mp1_euler.x = glm::vec3(0.f, 2.f, 0.f);
+    mp1_euler.v = glm::vec3(1.f, 0.f, 0.f);
 
-    renderer.drawLine(glm::vec3(0), forward, glm::vec4(1, 0, 0, 1));
-    renderer.drawLine(glm::vec3(0), right, glm::vec4(0, 1, 0, 1));
-    renderer.drawLine(glm::vec3(0), up, glm::vec4(0, 0, 1, 1));
+    massPoint mp1_midpoint;
+    mp1_midpoint.mass = 10.f;
+    mp1_midpoint.x = glm::vec3(0.f, 2.f, 0.f);
+    mp1_midpoint.v = glm::vec3(1.f, 0.f, 0.f);
 
-    // Partikel
-    auto cmap = Colormap("viridis");
+    printMasspoints(mp0_euler, mp1_euler, "inital values:");
 
-    for (auto& particle : particles){
-        renderer.drawSphere(particle.position, 0.1f, /*particle.color*/ glm::vec4(cmap(particle.lifetime / particleLifetime), 1)); // Danke, dass ihr mir bzgl. magic numbers zustimmt :D
-    }
+    spring spr_euler;
+    spr_euler.restLen = 1;
+    spr_euler.curLen = spr_euler.restLen;
+    spr_euler.stiffness = 40.f;
     
-    cameraMatrix = renderer.camera.viewMatrix;
-    fwd = inverse(cameraMatrix) * glm::vec4(0, 0, 1, 0);
-    right = inverse(cameraMatrix) * glm::vec4(1, 0, 0, 0);
-    up = inverse(cameraMatrix) * glm::vec4(0, 1, 0, 0);
+    spring spr_midpoint;
+    spr_midpoint.restLen = 1;
+    spr_midpoint.curLen = spr_midpoint.restLen;
+    spr_midpoint.stiffness = 40.f;
+
+    calculateEulerStep(&mp0_euler, &mp1_euler, &spr_euler, 0.1f);
+    printMasspoints(mp0_euler, mp1_euler, "After 0.1s using Euler Method:");
+
+    calculateMidpointStep(&mp0_midpoint, &mp1_midpoint, &spr_midpoint, 0.1f);
+    printMasspoints(mp0_midpoint, mp1_midpoint, "After 0.1s using Midpoint Method:");
+
+    std::string line; 
+    std::getline(std::cin, line);
+    int nSteps = std::stoi(line);
+
+    for (int i = 0; i < nSteps; i++) {
+        calculateEulerStep(&mp0_euler, &mp1_euler, &spr_euler, 0.1f);
+        calculateMidpointStep(&mp0_midpoint, &mp1_midpoint, &spr_midpoint, 0.1f);
+    }
+
+    printMasspoints(mp0_euler, mp1_euler, "End after using Euler Method:");
+    printMasspoints(mp0_midpoint, mp1_midpoint, "End after using Midpoint Method:");
 }
 
-void Scene1::simulateStep(){
-/*
-    pitch += pitch_increment;
-    roll += roll_increment;
-    yaw += yaw_increment;
-*/
-    glm::vec3 gravityAccel = glm::vec3(0, 0, -9.81f);
+void Scene1::printMasspoints(massPoint mp0, massPoint mp1, const char* headlineText)
+{
+    std::cout << std::endl;
+
+    if (std::strlen(headlineText) > 0) {
+        std::cout << headlineText << std::endl;
+    }
+
+    std::cout << "Masspoint 0" << std::endl;
+    std::cout << "position: " << mp0.x << std::endl;
+    std::cout << "velocity: " << mp0.v << std::endl;
+
+    std::cout << "Masspoint 1" << std::endl;
+    std::cout << "position: " << mp1.x << std::endl;
+    std::cout << "velocity: " << mp1.v << std::endl;
+}
+
+void Scene1::calculateEulerStep(massPoint* mp0, massPoint* mp1, spring* spr, float h) {
+    // F_ij = -k(curLen-initLen)*(x_i - x_j)/l
+
+    glm::vec3 F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
+    glm::vec3 F10 = -F01;
+
+    mp0->v = mp0->v + h * (F01/mp0->mass);
+    mp1->v = mp1->v + h * (F10/mp1->mass);
+
+    mp0->x = mp0->x + h * mp0->v;
+    mp1->x = mp1->x + h * mp1->v;
+
+    spr->curLen = glm::length(mp0->x - mp1->x);
+}
+
+void Scene1::calculateMidpointStep(massPoint* mp0, massPoint* mp1, spring* spr, float h) {
+    massPoint mp0_½h;
+    mp0_½h.mass = mp0->mass;
+    mp0_½h.x = mp0->x;
+    mp0_½h.v = mp0->v;
     
-    float realtimeDt = ImGui::GetIO().DeltaTime;
+    massPoint mp1_½h;
+    mp1_½h.mass = mp1->mass;
+    mp1_½h.x = mp1->x;
+    mp1_½h.v = mp1->v;
 
-    for (auto& particle : particles){
-        particle.position += /* 0.01f */ realtimeDt * particle.velocity; // ̶d̶̶a̶̶s̶̶ ̶̶i̶̶s̶̶t̶̶ ̶̶g̶̶o̶̶t̶̶t̶̶l̶̶o̶̶s̶̶e̶̶r̶̶ ̶̶c̶̶o̶̶d̶̶e̶̶.̶̶ ̶̶w̶̶d̶̶y̶̶m̶̶ ̶̶v̶̶e̶̶l̶̶o̶̶c̶̶i̶̶t̶̶y̶̶ ̶̶m̶̶i̶̶t̶̶ ̶̶e̶̶i̶̶n̶̶e̶̶r̶̶ ̶̶m̶̶a̶̶g̶̶i̶̶c̶̶ ̶̶n̶̶u̶̶m̶̶b̶̶e̶̶r̶̶ ̶̶m̶̶u̶̶l̶̶t̶̶i̶̶p̶̶l̶̶i̶̶z̶̶i̶̶e̶̶r̶̶e̶̶n̶̶?̶̶?̶
-        particle.lifetime += /* 0.01f */ realtimeDt; // ̶i̶̶c̶̶h̶̶ ̶̶n̶̶e̶̶h̶̶m̶̶e̶̶ ̶̶a̶̶n̶̶ ̶̶d̶̶a̶̶s̶̶ ̶̶i̶̶s̶̶t̶̶ ̶̶e̶̶i̶̶n̶̶e̶̶ ̶̶p̶̶r̶̶i̶̶m̶̶i̶̶t̶̶i̶̶v̶̶e̶̶ ̶̶d̶̶e̶̶l̶̶t̶̶a̶̶t̶̶i̶̶m̶̶e̶̶ ̶̶a̶̶p̶̶p̶̶r̶̶o̶̶x̶̶i̶̶m̶̶a̶̶t̶̶i̶̶o̶̶n̶̶?̶̶ ̶̶o̶̶d̶̶e̶̶r̶̶ ̶̶w̶̶i̶̶r̶̶d̶̶ ̶̶d̶̶e̶̶r̶̶ ̶̶c̶̶o̶̶d̶̶e̶̶ ̶̶h̶̶i̶̶e̶̶r̶̶ ̶̶u̶̶n̶̶a̶̶b̶̶h̶̶ä̶̶n̶̶g̶̶i̶̶g̶̶ ̶̶v̶̶o̶̶n̶̶ ̶̶d̶̶e̶̶r̶̶ ̶̶b̶̶i̶̶l̶̶d̶̶r̶̶a̶̶t̶̶e̶̶ ̶̶a̶̶u̶̶s̶̶g̶̶e̶̶f̶̶ü̶̶h̶̶r̶̶t̶̶?̶
-        particle.velocity += /* 0.01f */ realtimeDt * gravityAccel;
-    }
+    glm::vec3 F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
+    glm::vec3 F10 = -F01;
 
-    auto setLifetime = particleLifetime;
-    particles.erase(std::remove_if(particles.begin(), particles.end(), [](const Particle& particle){
-        return particle.lifetime > particleLifetime;
-    }), particles.end());
+    calculateEulerStep(&mp0_½h, &mp1_½h, spr, h/2);
 
+    F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
+    F10 = -F01;
 
-    if(ImGui::IsKeyDown(ImGuiKey_Space))
-        launchSphere();
-    if(ImGui::IsKeyDown(ImGuiKey_W))
-        pitch += pitch_increment;
-    if(ImGui::IsKeyDown(ImGuiKey_S))
-        pitch -= pitch_increment;
-    if(ImGui::IsKeyDown(ImGuiKey_A))
-        roll += roll_increment;
-    if(ImGui::IsKeyDown(ImGuiKey_D))
-        roll -= roll_increment;
-    if(ImGui::IsKeyDown(ImGuiKey_Q))
-        yaw += yaw_increment;
-    if(ImGui::IsKeyDown(ImGuiKey_E))
-        yaw -= yaw_increment;
+    mp0->v = mp0->v + h * (F01/mp0->mass);
+    mp1->v = mp1->v + h * (F10/mp1->mass);
     
-    if(ImGui::IsMouseReleased(ImGuiMouseButton_Right)){   
-        auto drag = ImGui::GetMouseDragDelta(1);
-        if(!(drag.x == 0 && drag.y == 0)){
-            auto dx = drag.x * right;
-            auto dy = -drag.y * up;
-            for (auto& particle : particles){
-                particle.velocity += (dx + dy) * realtimeDt;
-                particle.lifetime = 0.f;
-            }
-        }
-    }
-
-    lastLaunch++;
+    mp0->x = mp0->x + h * mp0_½h.v;
+    mp1->x = mp1->x + h * mp1_½h.v;
+    
+    spr->curLen = glm::length(mp0->x - mp1->x);
 }
 
-void Scene1::launchSphere(){
-    if(lastLaunch < launch_delay)
-        return;
-    lastLaunch = 0;
-    glm::mat4 rotation = glm::toMat4(glm::quat(glm::vec3(pitch, roll, yaw)));
-    glm::vec3 forward = glm::vec3(rotation * glm::vec4(0, 0, 1, 0));
-    glm::vec3 right = glm::vec3(rotation * glm::vec4(1, 0, 0, 0));
-    glm::vec3 up = glm::vec3(rotation * glm::vec4(0, 1, 0, 0));
-
-    glm::vec4 color = glm::vec4(dis(gen), dis(gen), dis(gen), 1);
-    float velocityMagnitude = 4.5f + dis(gen);
-    glm::vec3 velocity = forward * velocityMagnitude;
-
-/*
-    velocity += right * (dis(gen) - 0.5f) * 2.f;
-    velocity += up * (dis(gen) - 0.5f) * 2.f;
-*/
-    // Maybe have the spray form a circle instead of a square? Do this by (pseudo-) randomly genrating a direction first and then rng-ing its intensity after normalization.
-    glm::vec3 bloom = glm::normalize(right * (dis(gen) - 0.5f) * 2.f + up * (dis(gen) - 0.5f) * 2.f);
-    velocity += bloom * (dis(gen) - 0.5f) * 2.f;
-
-    particles.push_back(Particle{glm::vec3(0), velocity, color, .0});
-}
-
-void Scene1::onGUI(){
-    ImGui::SliderFloat("Pitch Increment", &pitch_increment, -0.01f, 0.01f);
-    ImGui::SliderFloat("Roll Increment", &roll_increment, -0.01f, 0.01f);
-    ImGui::SliderFloat("Yaw Increment", &yaw_increment, -0.01f, 0.01f);
-
-    ImGui::SliderInt("Launch Delay", &launch_delay, 0, 100);
-
-    /*
-
-    auto launch = ImGui::Button("Launch");
-
-    if(launch){
-        glm::mat4 rotation = glm::toMat4(glm::quat(glm::vec3(pitch, roll, yaw)));
-        glm::vec3 forward = glm::vec3(rotation * glm::vec4(0, 0, 1, 0));
-
-        particles.push_back(Particle{
-            glm::vec3(0), // Initial Position
-            forward * 5.f, // Initial Velocity
-            glm::vec4(dis(gen), dis(gen), dis(gen), 1), // Color
-            .0 // Particles are created with their own time counter set to 0
-        });
-    }
-
-    */
-}

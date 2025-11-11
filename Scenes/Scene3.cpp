@@ -1,6 +1,6 @@
-#include "Scene2.h"
+#include "Scene3.h"
 
-void Scene2::onDraw(Renderer& renderer){
+void Scene3::onDraw(Renderer& renderer){
     renderer.drawWireCube(glm::vec3(0), glm::vec3(5), glm::vec3(1));
 
     renderer.drawSphere(mp0.x,
@@ -14,23 +14,23 @@ void Scene2::onDraw(Renderer& renderer){
     renderer.drawLine(mp0.x, mp1.x, glm::vec4(1, 0.65f, 0, 1));
 }
 
-void Scene2::simulateStep()
+void Scene3::simulateStep()
 {
     float realtimeDt = ImGui::GetIO().DeltaTime;
 
     cur_Δt += realtimeDt;
     for (; cur_Δt >= Δt; cur_Δt -= Δt) {
-        calculateEulerStep(&mp0, &mp1, &spr, Δt);
+        calculateMidpointStep(&mp0, &mp1, &spr, Δt);
     }
 }
 
-void Scene2::onGUI()
+void Scene3::onGUI()
 {
-    ImGui::SliderInt("delta t in μs", &Δt_μs, 500, 5000000);
+    ImGui::SliderInt("delta t in μs", &Δt_μs, 500, 500000);
     Δt = ((float) Δt_μs) / 1000000.0f;
 }
 
-void Scene2::init() {
+void Scene3::init() {
     mp0.mass = 10.f;
     mp0.x = glm::vec3(0.f, 0.f, 0.f);
     mp0.v = glm::vec3(-1.f, 0.f, 0.f);
@@ -46,7 +46,7 @@ void Scene2::init() {
     spr.stiffness = 40.f;
 }
 
-void Scene2::printMasspoints(massPoint mp0, massPoint mp1, const char* headlineText)
+void Scene3::printMasspoints(massPoint mp0, massPoint mp1, const char* headlineText)
 {
     std::cout << std::endl;
 
@@ -63,7 +63,7 @@ void Scene2::printMasspoints(massPoint mp0, massPoint mp1, const char* headlineT
     std::cout << "velocity: " << mp1.v << std::endl;
 }
 
-void Scene2::calculateEulerStep(massPoint* mp0, massPoint* mp1, spring* spr, float h) {
+void Scene3::calculateEulerStep(massPoint* mp0, massPoint* mp1, spring* spr, float h) {
     glm::vec3 F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
     glm::vec3 F10 = -F01;
 
@@ -73,5 +73,33 @@ void Scene2::calculateEulerStep(massPoint* mp0, massPoint* mp1, spring* spr, flo
     mp0->x = mp0->x + h * mp0->v;
     mp1->x = mp1->x + h * mp1->v;
 
+    spr->curLen = glm::length(mp0->x - mp1->x);
+}
+
+void Scene3::calculateMidpointStep(massPoint* mp0, massPoint* mp1, spring* spr, float h) {
+    massPoint mp0_½h;
+    mp0_½h.mass = mp0->mass;
+    mp0_½h.x = mp0->x;
+    mp0_½h.v = mp0->v;
+    
+    massPoint mp1_½h;
+    mp1_½h.mass = mp1->mass;
+    mp1_½h.x = mp1->x;
+    mp1_½h.v = mp1->v;
+
+    glm::vec3 F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
+    glm::vec3 F10 = -F01;
+
+    calculateEulerStep(&mp0_½h, &mp1_½h, spr, h/2);
+
+    F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
+    F10 = -F01;
+
+    mp0->v = mp0->v + h * (F01/mp0->mass);
+    mp1->v = mp1->v + h * (F10/mp1->mass);
+    
+    mp0->x = mp0->x + h * mp0_½h.v;
+    mp1->x = mp1->x + h * mp1_½h.v;
+    
     spr->curLen = glm::length(mp0->x - mp1->x);
 }
