@@ -18,6 +18,7 @@ class Midpoint_Simulation : public Scene
     Spring spring = {0, 1, 40.f, 1.f};
 
     float time_step = 0.005f;
+    float cur_delta_time = 0.f;
 };
 
 

@@ -15,8 +15,8 @@ class Complex_Simulation : public Scene
 
     //own methods
     void checkCollision();
-    void midpointMethod(double current_length, glm::vec3 difference, glm::vec3 F01, glm::vec3 F10);
-    void eulerMethod(double current_length, glm::vec3 difference, glm::vec3 F01, glm::vec3 F10);
+    void midpointMethod(double len, glm::dvec3 diff, glm::dvec3 F01, glm::dvec3 F10);
+    void eulerMethod(double len, glm::dvec3 diff, glm::dvec3 F01, glm::dvec3 F10);
 
     //random variables
     std::random_device rd;
@@ -31,6 +31,7 @@ class Complex_Simulation : public Scene
     glm::float32 bounce_Factor = -1.f;
     //perfect bounce, to add damping go -1.f < x < 0.1f, to make it bounce more go < -1.f
     float time_step = 0.005f;
+    float cur_delta_time = 0.f;
 
     //AABB
     glm::vec3 cube_min;

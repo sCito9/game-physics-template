@@ -53,18 +53,22 @@ void Complex_Simulation::simulateStep()
     float realtimeDt = ImGui::GetIO().DeltaTime;
 
     //setup:
-    double current_length;
-    glm::vec3 F01, F10, difference;
+    double len;
+    glm::dvec3 F01, F10;
 
-    for (float i = 0; i < realtimeDt; i += time_step)
+
+    glm::dvec3 diff;
+
+    cur_delta_time += realtimeDt;
+    for (; cur_delta_time >= time_step; cur_delta_time -= time_step)
     {
         if (currentState == State::Euler_Simulation)
         {
-            eulerMethod(current_length, difference, F01, F10);
+            eulerMethod(len, diff, F01, F10);
         }
         else
         {
-            midpointMethod(current_length, difference, F01, F10);
+            midpointMethod(len, diff, F01, F10);
         }
 
         //Collision
@@ -72,19 +76,25 @@ void Complex_Simulation::simulateStep()
     }
 }
 
-void Complex_Simulation::eulerMethod(double current_length, glm::vec3 difference, glm::vec3 F01, glm::vec3 F10)
+void Complex_Simulation::eulerMethod(double len, glm::dvec3 diff, glm::dvec3 F01, glm::dvec3 F10)
 {
+    double stretch;
+    glm::dvec3 dir;
     glm::vec3 forces[std::size(points)] = {};
     //compute forces
     for (auto& spring : springs)
     {
-        difference = points[spring.point_1].position - points[spring.point_2].position;
-        current_length = glm::length(difference);
-        F01 = -spring.stiffness * ((float)current_length - spring.initial_Length) * (difference / (float)
-            current_length);
+        //spring length
+        diff = glm::dvec3(points[0].position) - glm::dvec3(points[1].position);
+        len = glm::length(diff);
+
+        dir = diff / len;
+        stretch = len - static_cast<double>(spring.initial_Length);
+        F01 = -static_cast<double>(spring.stiffness) * stretch * dir;
         F10 = -F01;
-        forces[spring.point_1] += F01;
-        forces[spring.point_2] += F10;
+
+        forces[spring.point_1] += glm::vec3(F01);
+        forces[spring.point_2] += glm::vec3(F10);
     }
 
     //apply gravity
@@ -103,19 +113,25 @@ void Complex_Simulation::eulerMethod(double current_length, glm::vec3 difference
 }
 
 
-void Complex_Simulation::midpointMethod(double current_length, glm::vec3 difference, glm::vec3 F01, glm::vec3 F10)
+void Complex_Simulation::midpointMethod(double len, glm::dvec3 diff, glm::dvec3 F01, glm::dvec3 F10)
 {
+    double stretch;
+    glm::dvec3 dir;
     glm::vec3 forces[std::size(points)] = {};
     //compute forces
     for (auto& spring : springs)
     {
-        difference = points[spring.point_1].position - points[spring.point_2].position;
-        current_length = glm::length(difference);
-        F01 = -spring.stiffness * ((float)current_length - spring.initial_Length) * (difference / (float)
-            current_length);
+        //spring length
+        diff = glm::dvec3(points[0].position) - glm::dvec3(points[1].position);
+        len = glm::length(diff);
+
+        dir = diff / len;
+        stretch = len - static_cast<double>(spring.initial_Length);
+        F01 = -static_cast<double>(spring.stiffness) * stretch * dir;
         F10 = -F01;
-        forces[spring.point_1] += F01;
-        forces[spring.point_2] += F10;
+
+        forces[spring.point_1] += glm::vec3(F01);
+        forces[spring.point_2] += glm::vec3(F10);
     }
 
     //add gravity
@@ -149,13 +165,17 @@ void Complex_Simulation::midpointMethod(double current_length, glm::vec3 differe
     //compute forces
     for (auto& spring : springs)
     {
-        difference = pos_m[spring.point_1] - pos_m[spring.point_2];
-        current_length = glm::length(difference);
-        F01 = -spring.stiffness * ((float)current_length - spring.initial_Length) * (difference / (float)
-            current_length);
+        //spring length
+        diff = glm::dvec3(pos_m[spring.point_1]) - glm::dvec3(pos_m[spring.point_2]);
+        len = glm::length(diff);
+
+        dir = diff / len;
+        stretch = len - static_cast<double>(spring.initial_Length);
+        F01 = -static_cast<double>(spring.stiffness) * stretch * dir;
         F10 = -F01;
-        forces[spring.point_1] += F01;
-        forces[spring.point_2] += F10;
+
+        forces[spring.point_1] += glm::vec3(F01);
+        forces[spring.point_2] += glm::vec3(F10);
     }
 
     //apply gravity
