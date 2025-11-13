@@ -27,6 +27,7 @@ void Complex_Simulation::onGUI()
 {
     ImGui::SliderFloat("Time Step", &time_step, 0.001f, 0.5f);
     ImGui::SliderFloat("Bounce Factor", &bounce_Factor, -2.f, -0.1f);
+    ImGui::SliderFloat("Damping Factor", &damping, 0.f, 1.f);
 
     const char* items[] = {"Euler Simulation", "Midpoint Simulation"};
     int current_index = static_cast<int>(currentState);
@@ -85,7 +86,7 @@ void Complex_Simulation::eulerMethod(double len, glm::dvec3 diff, glm::dvec3 F01
     for (auto& spring : springs)
     {
         //spring length
-        diff = glm::dvec3(points[0].position) - glm::dvec3(points[1].position);
+        diff = glm::dvec3(points[spring.point_1].position) - glm::dvec3(points[spring.point_2].position);
         len = glm::length(diff);
 
         dir = diff / len;
@@ -108,7 +109,7 @@ void Complex_Simulation::eulerMethod(double len, glm::dvec3 diff, glm::dvec3 F01
     {
         if (points[j].isFixed) continue;
         points[j].position = points[j].position + points[j].velocity * time_step;
-        points[j].velocity = points[j].velocity + (forces[j] / points[j].mass) * time_step;
+        points[j].velocity = points[j].velocity + (forces[j] / points[j].mass) * time_step * damping;
     }
 }
 
@@ -118,11 +119,18 @@ void Complex_Simulation::midpointMethod(double len, glm::dvec3 diff, glm::dvec3 
     double stretch;
     glm::dvec3 dir;
     glm::vec3 forces[std::size(points)] = {};
+
+    //reset forces
+    for (auto& force : forces)
+    {
+        force = glm::vec3(0.f);
+    }
+
     //compute forces
     for (auto& spring : springs)
     {
         //spring length
-        diff = glm::dvec3(points[0].position) - glm::dvec3(points[1].position);
+        diff = glm::dvec3(points[spring.point_1].position) - glm::dvec3(points[spring.point_2].position);
         len = glm::length(diff);
 
         dir = diff / len;
@@ -149,7 +157,7 @@ void Complex_Simulation::midpointMethod(double len, glm::dvec3 diff, glm::dvec3 
     for (int j = 0; j < std::size(points); j++)
     {
         if (points[j].isFixed) continue;
-        vel_m[j] = points[j].velocity + (forces[j] / points[j].mass) * (time_step / 2.f);
+        vel_m[j] = points[j].velocity + (forces[j] / points[j].mass) * (time_step / 2.f) * damping;
         pos_m[j] = points[j].position + points[j].velocity * (time_step / 2.f);
     }
 
@@ -188,7 +196,7 @@ void Complex_Simulation::midpointMethod(double len, glm::dvec3 diff, glm::dvec3 
     for (int j = 0; j < std::size(points); j++)
     {
         if (points[j].isFixed) continue;
-        points[j].velocity = points[j].velocity + (forces[j] / points[j].mass) * time_step;
+        points[j].velocity = points[j].velocity + (forces[j] / points[j].mass) * time_step * damping;
         points[j].position = points[j].position + vel_m[j] * time_step;
     }
 }
@@ -234,4 +242,3 @@ void Complex_Simulation::checkCollision()
         }
     }
 }
-
