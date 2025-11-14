@@ -38,7 +38,7 @@ void Scene1::init() {
 
     calculateMidpointStep(&mp0_midpoint, &mp1_midpoint, &spr_midpoint, 0.1f);
     printMasspoints(mp0_midpoint, mp1_midpoint, "After 0.1s using Midpoint Method:");
-
+/*
     std::string line; 
     std::getline(std::cin, line);
     int nSteps = std::stoi(line);
@@ -50,6 +50,7 @@ void Scene1::init() {
 
     printMasspoints(mp0_euler, mp1_euler, "End after using Euler Method:");
     printMasspoints(mp0_midpoint, mp1_midpoint, "End after using Midpoint Method:");
+*/
 }
 
 void Scene1::printMasspoints(massPoint mp0, massPoint mp1, const char* headlineText)

@@ -6,6 +6,26 @@
 #include <glm/glm.hpp>
 #include <imgui.h>
 
+struct mSpring {
+    glm::vec3 F01;
+    float restLen;
+    float stiffness;
+    int mp0_index;
+    int mp1_index;
+};
+
+struct mMassPoint {
+    glm::vec3 F;
+    glm::vec3 x;
+    glm::vec3 v;
+    float mass;
+};
+
+enum Method {
+    Euler ,
+    Midpoint
+};
+
 class Scene4 : public Scene
 {
     virtual void onDraw(Renderer &renderer) override;
@@ -13,21 +33,35 @@ class Scene4 : public Scene
     virtual void onGUI() override;
     void init() override;
 
-    float Δt = 0.005f;
-    int Δt_μs = 5000;
-    massPoint* massPoints;
-    int nMasspoints = 10;
-    spring* springs;
-    int nSprings = 10;
-    float cur_Δt = 0.f;
-    void (Scene4::* stepFunc) (massPoint*, massPoint*, spring*, float);
+    float deltaT = 0.005f;
+    float curDeltaT = 0.f;
+    int paused = true;
 
-    void simulateAllMasspoints(float h);
-    void calculateEulerStep(massPoint *mp0, massPoint *mp1, spring *spr, float h);
-    void calculateMidpointStep(massPoint *mp0, massPoint *mp1, spring *spr, float h);
-    void printMasspoints(massPoint* masspoints, int nMasspoints, const char* headlineText);
+    static const int nMasspoints = 10;
+    mMassPoint massPoints[nMasspoints];
+    mMassPoint massPointsMid[nMasspoints];
+    static const int nSprings = 37;
+    mSpring springs[nSprings];
+
+    glm::vec3 extF = glm::vec3(0);
+    const glm::vec3 g = glm::vec3(0, 0, -9.81f);
+    float global_stiffness_multiplier = 1.f;
+
+    const float floor = -4.2f;
+    const float ceiling = 13.f;
+
+    void (Scene4::* simFunc) ();
+    void simulateSceneEuler();
+    void simulateSceneMidpoint();
+    Method selectedMethod = Midpoint;
+
+    void computeElasticSpringForce(mSpring* spr, mMassPoint* mps);
+    void updateSpring(mSpring* spr);
+
+    void calculateEulerStep(mMassPoint* mp, float h);
+    void calculateMidpointStep(mMassPoint* mp, mMassPoint* mpMid);
 
     public:
-        Scene4() {}
+        Scene4() = default;
 };
 
