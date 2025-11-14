@@ -10,6 +10,9 @@ MassPoint::MassPoint(float initMass, glm::vec3 initPos, glm::vec3 initVel, glm::
     velocity = initVel;
     acceleration = initAcc;
     force = initForce;
+    tempPos = glm::vec3(0, 0, 0);
+    tempPos2 = glm::vec3(0, 0, 0);
+    tempAccel = glm::vec3(0, 0, 0);
 }
 
 void MassPoint::resetForces() {

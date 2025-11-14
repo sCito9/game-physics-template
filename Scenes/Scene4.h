@@ -10,6 +10,8 @@
 class Scene4 : public Scene{
 public:
 
+    float cur_dt;
+
     void init() override;
 
     void ShowDropdownMenuForMethods();
@@ -19,6 +21,7 @@ public:
     virtual void simulateStep() override;
 
     void calculateMidpointStep();
+
 };
 
 

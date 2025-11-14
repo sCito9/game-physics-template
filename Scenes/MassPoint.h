@@ -17,6 +17,9 @@ class MassPoint {
         glm::vec3 velocity;
         glm::vec3 acceleration;
         glm::vec3 force;
+        glm::vec3 tempPos;
+        glm::vec3 tempPos2;
+        glm::vec3 tempAccel;
 
         MassPoint(float initMass, glm::vec3 initPos, glm::vec3 initVel, glm::vec3 initAcc, glm::vec3 initForce);
         void resetForces();
