@@ -219,8 +219,6 @@ void Scene4::calculateMidpointStep(mMassPoint* mp, glm::vec3 midF) {
     glm::vec3 F = midF + extF + mp->mass * g;
 
     mp->v = mp->v + deltaT * (F / mp->mass);
-    
-    mp->x = mp->x + deltaT * mp->v;
 
     glm::vec3 newPos = mp->x + deltaT * mp->v;
     if (newPos.z <= floor || newPos.z >= ceiling) {
