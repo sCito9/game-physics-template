@@ -25,19 +25,6 @@ void Scene4::onDraw(Renderer& renderer){
 
 void Scene4::onGUI()
 {
-    ImGui::InputFloat("delta t in s", &deltaT);
-    ImGui::InputFloat("multiply stiffness", &global_stiffness_multiplier);
-    if (ImGui::InputFloat("mass", &mass)) {
-        for (int i = 0; i < nMasspoints; i++) {
-            (&massPoints[i])->mass = mass;
-            (&massPointsMid[i])->mass = mass;
-        }
-    }
-
-    if (ImGui::IsKeyPressed(ImGuiKey_Space)) {
-        paused = !paused;
-    }
-
     if (ImGui::Selectable("Euler", selectedMethod == Euler)) {
         selectedMethod = Euler;
         simFunc = &Scene4::simulateSceneEuler;
@@ -47,7 +34,21 @@ void Scene4::onGUI()
         simFunc = &Scene4::simulateSceneMidpoint;
     }
 
-    ImGui::InputFloat3("external Force on all", (float*) &extF);
+    ImGui::InputFloat3("ext Force", (float*) &extF);
+    ImGui::InputFloat("delta t in s", &deltaT);
+    ImGui::InputFloat("mul stiffness", &global_stiffness_multiplier);
+    if (ImGui::InputFloat("mass", &mass)) {
+        for (int i = 0; i < nMasspoints; i++) {
+            (&massPoints[i])->mass = mass;
+            (&massPointsMid[i])->mass = mass;
+        }
+    }
+    ImGui::LabelText("Info", "High stiffness may require\ntime steps smaller than 0.001s."
+                                      "\nTo use such vals, please do not\nhit enter or click after");
+
+    if (ImGui::IsKeyPressed(ImGuiKey_Space)) {
+        paused = !paused;
+    }
 }
 
 void Scene4::init() {
@@ -148,7 +149,7 @@ void Scene4::init() {
 
 void Scene4::simulateStep()
 {
-    if (paused || deltaT <= 0.f) return;
+    if (paused || deltaT <= 0.f || mass == 0.f) return;
     float realtimeDt = ImGui::GetIO().DeltaTime;
 
     curDeltaT += realtimeDt;
