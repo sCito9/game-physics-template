@@ -95,8 +95,8 @@ void Scene3::calculateMidpointStep(massPoint* mp0, massPoint* mp1, spring* spr, 
     mp0->v = mp0->v + h * (F01/mp0->mass);
     mp1->v = mp1->v + h * (F10/mp1->mass);
     
-    mp0->x = mp0->x + h * mp0Mid.v;
-    mp1->x = mp1->x + h * mp1Mid.v;
+    mp0->x = mp0->x + h * mp0->v;
+    mp1->x = mp1->x + h * mp1->v;
     
     spr->curLen = glm::length(mp0->x - mp1->x);
 }

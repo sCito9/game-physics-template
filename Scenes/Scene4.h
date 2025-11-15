@@ -42,6 +42,7 @@ class Scene4 : public Scene
     mMassPoint massPointsMid[nMasspoints];
     static const int nSprings = 37;
     mSpring springs[nSprings];
+    float mass = 10.f;
 
     glm::vec3 extF = glm::vec3(0);
     const glm::vec3 g = glm::vec3(0, 0, -9.81f);
@@ -51,15 +52,15 @@ class Scene4 : public Scene
     const float ceiling = 13.f;
 
     void (Scene4::* simFunc) ();
+    Method selectedMethod;
     void simulateSceneEuler();
     void simulateSceneMidpoint();
-    Method selectedMethod = Midpoint;
 
     void computeElasticSpringForce(mSpring* spr, mMassPoint* mps);
     void updateSpring(mSpring* spr);
 
     void calculateEulerStep(mMassPoint* mp, float h);
-    void calculateMidpointStep(mMassPoint* mp, mMassPoint* mpMid);
+    void calculateMidpointStep(mMassPoint* mp, glm::vec3 midF);
 
     public:
         Scene4() = default;

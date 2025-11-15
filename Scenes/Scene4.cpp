@@ -27,6 +27,12 @@ void Scene4::onGUI()
 {
     ImGui::InputFloat("delta t in s", &deltaT);
     ImGui::InputFloat("multiply stiffness", &global_stiffness_multiplier);
+    if (ImGui::InputFloat("mass", &mass)) {
+        for (int i = 0; i < nMasspoints; i++) {
+            (&massPoints[i])->mass = mass;
+            (&massPointsMid[i])->mass = mass;
+        }
+    }
 
     if (ImGui::IsKeyPressed(ImGuiKey_Space)) {
         paused = !paused;
@@ -48,6 +54,7 @@ void Scene4::init() {
     std::cout << "Complex Sim" << std::endl;
 
     simFunc = &Scene4::simulateSceneEuler;
+    selectedMethod = Euler;
 
     massPoints[0] = {
         glm::vec3(0), glm::vec3(0.f, 0.f, -2.f), glm::vec3(0.f, 0.f, 0.f), 10.f
@@ -141,7 +148,7 @@ void Scene4::init() {
 
 void Scene4::simulateStep()
 {
-    if (paused) return;
+    if (paused || deltaT <= 0.f) return;
     float realtimeDt = ImGui::GetIO().DeltaTime;
 
     curDeltaT += realtimeDt;
@@ -166,9 +173,7 @@ void Scene4::simulateSceneMidpoint() {
     }
 
     for (int i = 0; i < nMasspoints; i++) {
-        massPointsMid[i].x = massPoints[i].x;
-        massPointsMid[i].v = massPoints[i].v;
-        massPointsMid[i].F = massPoints[i].F;
+        massPointsMid[i] = massPoints[i];
         calculateEulerStep(&massPointsMid[i], deltaT / 2);
     }
 
@@ -177,7 +182,7 @@ void Scene4::simulateSceneMidpoint() {
     }
 
     for (int i = 0; i < nMasspoints; i++) {
-        calculateMidpointStep(&massPoints[i], &massPointsMid[i]);
+        calculateMidpointStep(&massPoints[i], massPointsMid[i].F);
     }
 }
 
@@ -210,12 +215,12 @@ void Scene4::calculateEulerStep(mMassPoint* mp, float h) {
     mp->F = glm::vec3(0);
 }
 
-void Scene4::calculateMidpointStep(mMassPoint* mp, mMassPoint* mpMid) {
-    glm::vec3 F = mpMid->F + extF + mp->mass * g;
+void Scene4::calculateMidpointStep(mMassPoint* mp, glm::vec3 midF) {
+    glm::vec3 F = midF + extF + mp->mass * g;
 
     mp->v = mp->v + deltaT * (F / mp->mass);
     
-    mp->x = mp->x + deltaT * mpMid->v;
+    mp->x = mp->x + deltaT * mp->v;
 
     glm::vec3 newPos = mp->x + deltaT * mp->v;
     if (newPos.z <= floor || newPos.z >= ceiling) {
