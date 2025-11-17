@@ -5,6 +5,7 @@
 #include <cstring>
 #include <glm/glm.hpp>
 #include <imgui.h>
+#include <Renderer.h>
 
 struct mSpring {
     glm::vec3 F01;
@@ -22,8 +23,10 @@ struct mMassPoint {
 };
 
 enum Method {
-    Euler ,
-    Midpoint
+    Euler,
+    Symplectic,
+    Midpoint,
+    SymplecticMidpoint
 };
 
 class Scene4 : public Scene
@@ -48,19 +51,25 @@ class Scene4 : public Scene
     const glm::vec3 g = glm::vec3(0, 0, -9.81f);
     float global_stiffness_multiplier = 1.f;
 
-    const float floor = -4.2f;
-    const float ceiling = 13.f;
+    const float floor = -5.f;
+    bool isCubeActive = false;
 
     void (Scene4::* simFunc) ();
     Method selectedMethod;
     void simulateSceneEuler();
+    void simulateSceneSymplecticEuler();
     void simulateSceneMidpoint();
+    void simulateSceneSymplecticMidpoint();
 
     void computeElasticSpringForce(mSpring* spr, mMassPoint* mps);
     void updateSpring(mSpring* spr);
 
     void calculateEulerStep(mMassPoint* mp, float h);
+    void calculateSymplecticEulerStep(mMassPoint *mp, float h);
     void calculateMidpointStep(mMassPoint* mp, glm::vec3 midF);
+    void calculateSymplecticMidpointStep(mMassPoint *mp, glm::vec3 midF);
+
+    void resolveCollision(mMassPoint *mp, glm::vec3 *newPos) const;
 
     public:
         Scene4() = default;

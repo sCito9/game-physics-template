@@ -38,19 +38,6 @@ void Scene1::init() {
 
     calculateMidpointStep(&mp0_midpoint, &mp1_midpoint, &spr_midpoint, 0.1f);
     printMasspoints(mp0_midpoint, mp1_midpoint, "After 0.1s using Midpoint Method:");
-/*
-    std::string line; 
-    std::getline(std::cin, line);
-    int nSteps = std::stoi(line);
-
-    for (int i = 0; i < nSteps; i++) {
-        calculateEulerStep(&mp0_euler, &mp1_euler, &spr_euler, 0.1f);
-        calculateMidpointStep(&mp0_midpoint, &mp1_midpoint, &spr_midpoint, 0.1f);
-    }
-
-    printMasspoints(mp0_euler, mp1_euler, "End after using Euler Method:");
-    printMasspoints(mp0_midpoint, mp1_midpoint, "End after using Midpoint Method:");
-*/
 }
 
 void Scene1::printMasspoints(massPoint mp0, massPoint mp1, const char* headlineText)
@@ -71,44 +58,42 @@ void Scene1::printMasspoints(massPoint mp0, massPoint mp1, const char* headlineT
 }
 
 void Scene1::calculateEulerStep(massPoint* mp0, massPoint* mp1, spring* spr, float h) {
-    // F_ij = -k(curLen-initLen)*(x_i - x_j)/l
-
+    // technically irrelevant for only 1 step
     glm::vec3 F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
     glm::vec3 F10 = -F01;
 
-    mp0->v = mp0->v + h * (F01/mp0->mass);
-    mp1->v = mp1->v + h * (F10/mp1->mass);
-
     mp0->x = mp0->x + h * mp0->v;
     mp1->x = mp1->x + h * mp1->v;
+
+    // technically irrelevant for only 1 step
+    mp0->v = mp0->v + h * (F01/mp0->mass);
+    mp1->v = mp1->v + h * (F10/mp1->mass);
 
     spr->curLen = glm::length(mp0->x - mp1->x);
 }
 
 void Scene1::calculateMidpointStep(massPoint* mp0, massPoint* mp1, spring* spr, float h) {
-    massPoint mp0_½h;
-    mp0_½h.mass = mp0->mass;
-    mp0_½h.x = mp0->x;
-    mp0_½h.v = mp0->v;
+    massPoint mp0_mid;
+    mp0_mid.mass = mp0->mass;
+    mp0_mid.x = mp0->x;
+    mp0_mid.v = mp0->v;
     
-    massPoint mp1_½h;
-    mp1_½h.mass = mp1->mass;
-    mp1_½h.x = mp1->x;
-    mp1_½h.v = mp1->v;
+    massPoint mp1_mid;
+    mp1_mid.mass = mp1->mass;
+    mp1_mid.x = mp1->x;
+    mp1_mid.v = mp1->v;
+
+    calculateEulerStep(&mp0_mid, &mp1_mid, spr, h/2);
 
     glm::vec3 F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
     glm::vec3 F10 = -F01;
 
-    calculateEulerStep(&mp0_½h, &mp1_½h, spr, h/2);
+    mp0->x = mp0->x + h * mp0_mid.v;
+    mp1->x = mp1->x + h * mp1_mid.v;
 
-    F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
-    F10 = -F01;
-
+    // technically irrelevant for only 1 step
     mp0->v = mp0->v + h * (F01/mp0->mass);
     mp1->v = mp1->v + h * (F10/mp1->mass);
-    
-    mp0->x = mp0->x + h * mp0_½h.v;
-    mp1->x = mp1->x + h * mp1_½h.v;
     
     spr->curLen = glm::length(mp0->x - mp1->x);
 }

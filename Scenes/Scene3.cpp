@@ -63,15 +63,18 @@ void Scene3::printMasspoints(massPoint mp0, massPoint mp1, const char* headlineT
     std::cout << "velocity: " << mp1.v << std::endl;
 }
 
+/**
+ * nonsensical, integrating v first, then x would be better
+ * **/
 void Scene3::calculateEulerStep(massPoint* mp0, massPoint* mp1, spring* spr, float h) {
     glm::vec3 F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
     glm::vec3 F10 = -F01;
 
-    mp0->v = mp0->v + h * (F01/mp0->mass);
-    mp1->v = mp1->v + h * (F10/mp1->mass);
-
     mp0->x = mp0->x + h * mp0->v;
     mp1->x = mp1->x + h * mp1->v;
+
+    mp0->v = mp0->v + h * (F01/mp0->mass);
+    mp1->v = mp1->v + h * (F10/mp1->mass);
 
     spr->curLen = glm::length(mp0->x - mp1->x);
 }
@@ -92,11 +95,12 @@ void Scene3::calculateMidpointStep(massPoint* mp0, massPoint* mp1, spring* spr, 
     glm::vec3 F01 = ((-spr->stiffness / spr->curLen) * (spr->curLen - spr->restLen)) * (mp0->x - mp1->x);
     glm::vec3 F10 = -F01;
 
-    mp0->v = mp0->v + h * (F01/mp0->mass);
-    mp1->v = mp1->v + h * (F10/mp1->mass);
-    
     mp0->x = mp0->x + h * mp0->v;
     mp1->x = mp1->x + h * mp1->v;
+
+    mp0->v = mp0->v + h * (F01/mp0->mass);
+    mp1->v = mp1->v + h * (F10/mp1->mass);
+
     
     spr->curLen = glm::length(mp0->x - mp1->x);
 }

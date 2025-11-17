@@ -1,8 +1,8 @@
 #include "Scene.h"
 #include <map>
 
-#include "Scene01.h"
-#include "Scene02.h"
+//#include "Scene01.h"
+//#include "Scene02.h"
 #include "Scene1.h"
 #include "Scene2.h"
 #include "Scene3.h"
