@@ -23,7 +23,7 @@ class Single_Step : public Scene
     float c = 0.5f;
 
     //initialize some values:
-    glm::vec3 r = glm::vec3(0.f, 0.f, glm::pi / 2.f);
+    glm::vec3 r = glm::vec3(0.f, 0.f, glm::half_pi<float>());
 
     glm::mat3 I = glm::mat3(1.f);
 

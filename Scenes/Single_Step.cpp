@@ -24,11 +24,33 @@ void Single_Step::init()
     q = glm::cross(glm::vec3(0.3f, 0.5f, 0.25f), F);
 
     //Euler Step
-    x_cm = x_cm + step_size * v_cm;
     v_cm = v_cm + step_size * F / M;
+    x_cm = x_cm + step_size * v_cm;
+    w = w + step_size * glm::inverse(I) * q;
     r = r + step_size * w;
-    w = w + step_size * q / I;
+
+
+    std::cout << "Updated Rigidbody State:" << std::endl;
+    std::cout << "\nCenter of Mass Position: vec3(" << x_cm.x << ", " << x_cm.y << ", " << x_cm.z << ")" << std::endl;
+    std::cout << "Center of Mass Linear Velocity: vec3(" << v_cm.x << ", " << v_cm.y << ", " << v_cm.z << ")" <<
+        std::endl;
+    std::cout << "Center of Mass Orientation: vec3(" << r.x << ", " << r.y << ", " << r.z << ")" << std::endl;
+    std::cout << "Center of Mass Angular Velocity: vec3(" << w.x << ", " << w.y << ", " << w.z << ")" <<
+        std::endl;
 
 
     //world position of point x_i
+    float angle = glm::length(r);
+    glm::vec3 axis = glm::normalize(r);
+    glm::mat4 R4 = glm::rotate(glm::mat4(1.0f), angle, axis);
+    glm::mat3 R = glm::mat3(R4);
+
+    glm::vec3 x_rel = R * glm::vec3(-0.3f, -0.5f, -0.25f);
+    glm::vec3 x_i = x_cm + x_rel;
+    glm::vec3 v_i = v_cm + glm::cross(w, x_rel);
+
+    std::cout << "\n\n\nUpdated Point State:" << std::endl;
+    std::cout << "\nPoint Position: vec3(" << x_i.x << ", " << x_i.y << ", " << x_i.z << ")" << std::endl;
+    std::cout << "Point Velocity: vec3(" << v_i.x << ", " << v_i.y << ", " << v_i.z << ")" <<
+        std::endl;
 }
