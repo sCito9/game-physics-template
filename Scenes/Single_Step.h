@@ -10,29 +10,30 @@
 class Single_Step : public Scene
 {
     void init();
+
+    glm::quat multiplication(glm::quat q1, glm::quat q2);
+
+
     float step_size = 2.f;
 
     //pre compute
-    float M = 2.f;
-    glm::vec3 x_cm = glm::vec3(0.f, 0.f, 0.f);
-    glm::vec3 v_cm = glm::vec3(0.f, 0.f, 0.f);
-
-    //extends:
-    float a = 1.f;
-    float b = 0.6f;
-    float c = 0.5f;
-
-    //initialize some values:
-    glm::vec3 r = glm::vec3(0.f, 0.f, glm::half_pi<float>());
-
-    glm::mat3 I = glm::mat3(1.f);
-
-    glm::vec3 w = glm::vec3(0.f, 0.f, 0.f);
-
-
-    //forces
-    glm::vec3 q = glm::vec3(0.f, 0.f, 0.f);
-    glm::vec3 F = glm::vec3(0.f, 0.f, 0.f);
+    Cube cube = {
+        glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f),
+        //point positions:
+        {
+            glm::vec3(-1.f, -0.6f, -0.5f), glm::vec3(1.f, -0.6f, -0.5f),
+            glm::vec3(1.f, 0.6f, -0.5f), glm::vec3(1.f, 0.6f, 0.5f),
+            glm::vec3(-1.f, 0.6f, -0.5f), glm::vec3(-1.f, 0.6f, 0.5f),
+            glm::vec3(1.f, -0.6f, 0.5f), glm::vec3(-1.f, -0.6f, 0.5f)
+        },
+        {0.f, 0.f, 0.f, 90.f}, glm::inverse(
+            glm::mat3(
+                4.88f / 12.f, 0.f, 0.f,
+                0.f, 10.88f / 12.f, 0.f,
+                0.f, 0.f, 10.f / 12.f
+            )),
+        glm::vec3(0.f, 0.f, 0.f), 2.f
+    };
 };
 
 

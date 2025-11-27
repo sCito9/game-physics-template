@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 
+
 /// @brief Scene base class. **Run `cmake . -B build` after adding new files to the scenes folder**
 ///
 /// This class is the base class for all scenes in the application.
@@ -26,6 +27,17 @@ struct Spring
     int point_2;
     float stiffness;
     float initial_Length;
+};
+
+struct Cube
+{
+    glm::vec3 position_cm;
+    glm::vec3 velocity_cm;
+    glm::vec3 points[8];
+    glm::quat orientation;
+    glm::mat3 I_inv;
+    glm::vec3 L;
+    float M;
 };
 
 class Scene
