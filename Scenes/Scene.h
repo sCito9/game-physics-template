@@ -34,8 +34,10 @@ struct Cube
     glm::vec3 position_cm;
     glm::vec3 velocity_cm;
     glm::vec3 points[8];
+    glm::vec3 points_world_space[8];
     glm::quat orientation;
     glm::mat3 I_inv;
+    glm::mat3 I;
     glm::vec3 L;
     float M;
 };
@@ -64,7 +66,11 @@ public:
     virtual ~Scene() = default;
 
     glm::mat4 cameraMatrix = glm::mat4(1);
+    glm::mat4 projectionMatrix = glm::mat4(1);
     glm::vec3 fwd = glm::vec3(1, 0, 0);
     glm::vec3 right = glm::vec3(0, 1, 0);
     glm::vec3 up = glm::vec3(0, 0, 1);
+    glm::vec3 camera_Position = glm::vec3(0.f);
+    int width = 0;
+    int height = 0;
 };

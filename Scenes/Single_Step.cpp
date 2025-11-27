@@ -31,9 +31,9 @@ void Single_Step::init()
 
     cube.L += step_size * q;
     w = cube.I_inv * cube.L;
-    cube.orientation += step_size / 2.f * multiplication(glm::quat(0.f, w.x, w.y, w.z), cube.orientation);
+    cube.orientation += step_size / 2.f * multiplication(cube.orientation, glm::quat(0.f, w.x, w.y, w.z));
     cube.orientation = glm::normalize(cube.orientation);
-    cube.I_inv = glm::mat3_cast(cube.orientation) * cube.I_inv * glm::transpose(glm::mat3_cast(cube.orientation));
+    cube.I_inv = glm::mat3_cast(cube.orientation) * cube.I * glm::transpose(glm::mat3_cast(cube.orientation));
 
     std::cout << "Updated Rigidbody State:" << std::endl;
     std::cout << "\nCenter of Mass Position: vec3(" << cube.position_cm.x << ", " << cube.position_cm.y << ", " << cube.
