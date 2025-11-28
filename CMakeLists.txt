@@ -85,18 +85,8 @@ add_executable(Template
 	src/Colormap.h
 	src/Colormap.cpp
 	src/PathFinder.cpp
-		Scenes/Scene_1.h
-		Scenes/Scene_1.cpp
-        Scenes/Spring.cpp
-        Scenes/Spring.h
-		Scenes/MassPoint.cpp
-		Scenes/MassPoint.h
-		Scenes/Scene2.cpp
-		Scenes/Scene2.h
-		Scenes/Scene3.cpp
-		Scenes/Scene3.h
-		Scenes/Scene4.cpp
-		Scenes/Scene4.h
+		Scenes/Scene1.cpp
+		Scenes/Scene1.h
 )
 
 if(UNIX AND NOT APPLE)

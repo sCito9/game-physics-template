@@ -29,13 +29,7 @@ public:
     virtual void onGUI() {};
     virtual ~Scene() = default;
 
-    std::list<MassPoint*> massPoints = {};
-    std::list<Spring*> springs = {};
     float timeStep = 0.005f;
-
-    void calculateEulerStep();
-    void calculateMidpointStep();
-    void computeCurrentForcesOnPoint(MassPoint* point);
 
     glm::mat4 cameraMatrix = glm::mat4(1);
     glm::vec3 fwd = glm::vec3(1, 0, 0);
