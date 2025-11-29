@@ -34,7 +34,7 @@ void Simulation::onDraw(Renderer& renderer)
 void Simulation::onGUI()
 {
     ImGui::SliderFloat("Time Step", &step_size, 0.001f, 4.f);
-    //Leave z at 0 except you want the cube to be gone
+    //Leave y at 0 except you want the cube to be gone
     ImGui::InputFloat3("Force Amount", force_amount);
     ImGui::InputFloat3("Force Position", force_position);
     auto klicked = ImGui::Button("Add Force");

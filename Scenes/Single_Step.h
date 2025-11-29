@@ -43,7 +43,7 @@ class Single_Step : public Scene
             0.f, 10.88f / 12.f, 0.f,
             0.f, 0.f, 10.f / 12.f
         )),
-        glm::vec3(0.f, 0.f, 0.f), 2.f
+        glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(1.f), false
     };
 };
 

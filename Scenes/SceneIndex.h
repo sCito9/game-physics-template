@@ -1,6 +1,8 @@
 #include "Scene.h"
 #include <map>
 
+#include "Collision.h"
+#include "Complex_Simulation_Rb.h"
 #include "Scene1.h"
 #include "Simulation.h"
 #include "Single_Step.h"
@@ -18,6 +20,8 @@ SceneCreator creator()
 
 std::map<std::string, SceneCreator> scenesCreators = {
     {"Single Step", creator<Single_Step>()},
-    {"Simulation", creator<Simulation>()}
+    {"Simulation", creator<Simulation>()},
+    {"Collision", creator<Collision>()},
+    {"Complex Simulation", creator<Complex_Simulation_Rb>()}
     // add more Scene types here
 };

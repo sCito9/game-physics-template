@@ -49,7 +49,7 @@ class Simulation : public Scene
             0.f, 10.88f / 12.f, 0.f,
             0.f, 0.f, 10.f / 12.f
         )),
-        glm::vec3(0.f, 0.f, 0.f), 2.f
+        glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(1.f), false
     };
 
     //initialize w
@@ -61,7 +61,7 @@ class Simulation : public Scene
     glm::vec3 q = glm::vec3(0.f);
 
 
-    float force_amount[3] = {3.f, 2.f, 0.f};
+    float force_amount[3] = {3.f, 0.f, 2.f};
     float force_position[3] = {0.f, 0.f, 0.f};
 };
 

@@ -40,7 +40,10 @@ struct Cube
     glm::mat3 I;
     glm::vec3 L;
     float M;
+    glm::vec3 scale;
+    bool isFixed;
 };
+
 
 class Scene
 {
