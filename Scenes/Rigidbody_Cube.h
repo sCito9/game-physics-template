@@ -11,7 +11,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "Punkt.h"
 
 
 class Rigidbody_Cube {
@@ -24,8 +23,6 @@ class Rigidbody_Cube {
     glm::vec3 cm_linearVelocity;
     glm::vec3 angularVelocity;
     float M;    //overall mass
-    glm::vec3 local_vertices_pos[8];
-    Punkt points[8];
     glm::mat3 I0_1;   //inverted initial Inertia tensor
     glm::mat3 I_1;  //inverted current Inertia tensor
     glm::quat r;    //rotation quaternion
@@ -33,6 +30,8 @@ class Rigidbody_Cube {
     glm::vec3 L;    //angular momentum
     glm::vec3 q;    //torque
     glm::vec3 F;    //external Forces
+    std::list<glm::vec3> ForcePosQueue;
+    std::list<glm::vec3> ForceDirQueue;
 };
 
 

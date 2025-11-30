@@ -20,18 +20,6 @@ Rigidbody_Cube::Rigidbody_Cube(glm::vec3 position, glm::quat rotation, glm::vec3
     I_1 = rot * I0_1 * glm::transpose(rot);
     angularVelocity = I_1 * L;
 
-    //berechnet die lokalen offsets zu den punkten
-    local_vertices_pos[0] = glm::vec3(-x_length / 2, -y_length / 2, -z_length / 2);
-    local_vertices_pos[1] = glm::vec3(-x_length / 2, y_length / 2, -z_length / 2);
-    local_vertices_pos[2] = glm::vec3(x_length / 2, -y_length / 2, -z_length / 2);
-    local_vertices_pos[3] = glm::vec3(x_length / 2, y_length / 2, -z_length / 2);
-    local_vertices_pos[4] = glm::vec3(-x_length / 2, -y_length / 2, z_length / 2);
-    local_vertices_pos[5] = glm::vec3(-x_length / 2, y_length / 2, z_length / 2);
-    local_vertices_pos[6] = glm::vec3(x_length / 2, -y_length / 2, z_length / 2);
-    local_vertices_pos[7] = glm::vec3(x_length / 2, y_length / 2, z_length / 2);
-
-    for (int i = 0; i < 8; i++) {
-        //gibt den Punkten deren Worldpositions
-        points[i] = Punkt(cm_pos + rot * local_vertices_pos[i], glm::vec3(0), M / 8);
-    }
+    ForcePosQueue = {};
+    ForceDirQueue = {};
 }

@@ -12,6 +12,7 @@ class Scene2 : public Scene {
     void init() override;
     void simulateStep() override;
     void onGUI() override;
+    void handleInput(Rigidbody_Cube* cube);
 };
 
 

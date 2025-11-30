@@ -9,6 +9,8 @@
 
 class Scene1 : public Scene {
 void init() override;
+    glm::vec3 getPoint_x_pos(Rigidbody_Cube* cube);
+    glm::vec3 getPoint_x_vel(Rigidbody_Cube* cube);
 };
 
 

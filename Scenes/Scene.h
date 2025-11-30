@@ -30,8 +30,10 @@ public:
 
     float currentTime = 0;
     float timeStep = 0.01f;
+    float collisionElasticity = .5f;
     bool shouldSimulate = true;
     std::list<Rigidbody_Cube*> cubes;
+    std::list<std::tuple<Rigidbody_Cube*, Rigidbody_Cube*>> detectedCollisions = {};
 
     glm::mat4 cameraMatrix = glm::mat4(1);
     glm::vec3 camPos = glm::vec3(0);
@@ -40,7 +42,5 @@ public:
     glm::vec3 up = glm::vec3(0, 0, 1);
 
     void simStep(float timeStep);
-    void assignPointForces(Rigidbody_Cube *cube);
-    glm::vec3 getExternalForces(Rigidbody_Cube* cube);
-    glm::vec3 getTorque(Rigidbody_Cube* cube);
+    void addForce(Rigidbody_Cube *cube, glm::vec3 pos, glm::vec3 force);
 };
