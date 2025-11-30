@@ -8,7 +8,7 @@
 
 
 class Scene1 : public Scene {
-
+void init() override;
 };
 
 

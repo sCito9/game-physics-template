@@ -1,9 +1,8 @@
 #pragma once
 #include <list>
 
-#include "MassPoint.h"
 #include "Renderer.h"
-#include "Spring.h"
+#include "Rigidbody_Cube.h"
 
 /// @brief Scene base class. **Run `cmake . -B build` after adding new files to the scenes folder**
 ///
@@ -29,10 +28,19 @@ public:
     virtual void onGUI() {};
     virtual ~Scene() = default;
 
-    float timeStep = 0.005f;
+    float currentTime = 0;
+    float timeStep = 0.01f;
+    bool shouldSimulate = true;
+    std::list<Rigidbody_Cube*> cubes;
 
     glm::mat4 cameraMatrix = glm::mat4(1);
+    glm::vec3 camPos = glm::vec3(0);
     glm::vec3 fwd = glm::vec3(1, 0, 0);
     glm::vec3 right = glm::vec3(0, 1, 0);
     glm::vec3 up = glm::vec3(0, 0, 1);
+
+    void simStep(float timeStep);
+    void assignPointForces(Rigidbody_Cube *cube);
+    glm::vec3 getExternalForces(Rigidbody_Cube* cube);
+    glm::vec3 getTorque(Rigidbody_Cube* cube);
 };
