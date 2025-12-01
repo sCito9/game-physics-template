@@ -55,7 +55,7 @@ class Collision : public Scene
             0.f, 8.f, 0.f,
             0.f, 0.f, 8.f
         )),
-        glm::vec3(0.f, 0.f, 0.f), 3.f, glm::vec3(2.f), false
+        glm::vec3(0.f, 0.f, 0.f), 3.f, glm::vec3(4.f), false
     };
 
     Cube cube_2 = {
@@ -84,7 +84,7 @@ class Collision : public Scene
             0.f, 64.f / 12.f, 0.f,
             0.f, 0.f, 64.f / 12.f
         )),
-        glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(1.f), false
+        glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(4.f), false
     };
     Cube* cubes[2] = {&cube_1, &cube_2};
     //initialize w

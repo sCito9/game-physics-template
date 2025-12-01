@@ -55,7 +55,7 @@ class Complex_Simulation_Rb : public Scene
             0.f, 8.f, 0.f,
             0.f, 0.f, 8.f
         )),
-        glm::vec3(0.f, 0.f, 0.f), 100.f, glm::vec3(70.f, 70.f, 2.f), true
+        glm::vec3(0.f, 0.f, 0.f), 100.f, glm::vec3(140.f, 140.f, 4.f), true
     };
 
 
@@ -86,7 +86,7 @@ class Complex_Simulation_Rb : public Scene
             0.f, 8.f, 0.f,
             0.f, 0.f, 8.f
         )),
-        glm::vec3(0.f, 0.f, 0.f), 3.f, glm::vec3(2.f), false
+        glm::vec3(0.f, 0.f, 0.f), 3.f, glm::vec3(4.f), false
     };
 
     Cube cube_2 = {
@@ -115,7 +115,7 @@ class Complex_Simulation_Rb : public Scene
             0.f, 64.f / 12.f, 0.f,
             0.f, 0.f, 64.f / 12.f
         )),
-        glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(1.f), false
+        glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(4.f), false
     };
     Cube cube_3 = {
         glm::vec3(6.f, 0.f, 0.f), glm::vec3(-3.f, 0.f, 0.f),
@@ -172,7 +172,7 @@ class Complex_Simulation_Rb : public Scene
             0.f, 64.f / 12.f, 0.f,
             0.f, 0.f, 64.f / 12.f
         )),
-        glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(3.f), false
+        glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(4.f), false
     };
 
     int array_length = 5;
