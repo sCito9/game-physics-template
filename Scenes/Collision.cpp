@@ -8,7 +8,7 @@
 
 void Collision::onDraw(Renderer& renderer)
 {
-    for (auto vertex : cube_1.points_world_space)
+    /*for (auto vertex : cube_1.points_world_space)
     {
         renderer.drawSphere(vertex, 0.1f, glm::vec4(1, 0, 0, 1));
     }
@@ -42,7 +42,9 @@ void Collision::onDraw(Renderer& renderer)
     renderer.drawLine(cube_2.points_world_space[4], cube_2.points_world_space[5], glm::vec4(0, 0, 1, 1));
     renderer.drawLine(cube_2.points_world_space[4], cube_2.points_world_space[7], glm::vec4(0, 0, 1, 1));
     renderer.drawLine(cube_2.points_world_space[5], cube_2.points_world_space[6], glm::vec4(0, 0, 1, 1));
-    renderer.drawLine(cube_2.points_world_space[6], cube_2.points_world_space[7], glm::vec4(0, 0, 1, 1));
+    renderer.drawLine(cube_2.points_world_space[6], cube_2.points_world_space[7], glm::vec4(0, 0, 1, 1));*/
+    renderer.drawCube(cube_1.position_cm, cube_1.orientation, cube_1.scale, glm::vec4(1.f, 0.f, 0.f, 1.f));
+    renderer.drawCube(cube_2.position_cm, cube_2.orientation, cube_2.scale, glm::vec4(0.f, 0.f, 1.f, 1.f));
 }
 
 

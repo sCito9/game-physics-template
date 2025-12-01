@@ -8,13 +8,15 @@
 
 void Simulation::onDraw(Renderer& renderer)
 {
+    renderer.drawSphere(glm::vec3(force_position[0], force_position[1], force_position[2]), 0.05,
+                       glm::vec4(0.f, 0.f, 1.f, 1.f));
+    /*
     for (auto vertex : cube.points_world_space)
     {
         renderer.drawSphere(vertex, 0.1f, glm::vec4(1, 0, 0, 1));
     }
 
-    renderer.drawSphere(glm::vec3(force_position[0], force_position[1], force_position[2]), 0.05,
-                        glm::vec4(0.f, 0.f, 1.f, 1.f));
+
 
     renderer.drawLine(cube.points_world_space[0], cube.points_world_space[1], glm::vec4(0, 1, 0, 1));
     renderer.drawLine(cube.points_world_space[1], cube.points_world_space[2], glm::vec4(0, 1, 0, 1));
@@ -27,7 +29,8 @@ void Simulation::onDraw(Renderer& renderer)
     renderer.drawLine(cube.points_world_space[0], cube.points_world_space[7], glm::vec4(0, 1, 0, 1));
     renderer.drawLine(cube.points_world_space[1], cube.points_world_space[6], glm::vec4(0, 1, 0, 1));
     renderer.drawLine(cube.points_world_space[2], cube.points_world_space[3], glm::vec4(0, 1, 0, 1));
-    renderer.drawLine(cube.points_world_space[4], cube.points_world_space[5], glm::vec4(0, 1, 0, 1));
+    renderer.drawLine(cube.points_world_space[4], cube.points_world_space[5], glm::vec4(0, 1, 0, 1));*/
+    renderer.drawCube(cube.position_cm, cube.orientation, cube.scale, glm::vec4(1.f, 0.f, 0.f, 1.f));
 }
 
 
