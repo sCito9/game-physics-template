@@ -1,10 +1,10 @@
-#include "Scene.h"
-#include "ex1_util.h"
+#include "Scenes/Scene.h"
+#include "Scenes/vec3_util.h"
 
 #include <iostream>
 #include <cstring>
-#include <glm/glm.hpp>
-#include <imgui.h>
+#include "thirdparty/glm/glm.hpp"
+#include "thirdparty/imgui/imgui.h"
 
 class Scene2 : public Scene
 {

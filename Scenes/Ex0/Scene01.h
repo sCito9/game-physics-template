@@ -1,5 +1,5 @@
-#include "Scene.h"
-#include <imgui.h>
+#include "Scenes/Scene.h"
+#include "thirdparty/imgui/imgui.h"
 #include <random>
 
 struct Particle
