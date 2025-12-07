@@ -6,6 +6,7 @@
 
 #include "Scene1.h"
 
+
 void Scene1::init() {
     glm::mat3 initialRotation = glm::mat3(cos(glm::pi<float>() / 2), -sin(glm::pi<float>() / 2), 0,
                                         sin(glm::pi<float>() / 2), cos(glm::pi<float>() /2), 0,
@@ -23,6 +24,9 @@ void Scene1::init() {
     printf("Velocity:\n");
     printf("Center of mass: x: %f, y: %f, z: %f\n", cubes.front()->cm_linearVelocity.x, cubes.front()->cm_linearVelocity.y, cubes.front()->cm_linearVelocity.z);
     printf("Point_x: x: %f, y: %f, z: %f\n", getPoint_x_vel(cubes.front()).x, getPoint_x_vel(cubes.front()).y, getPoint_x_vel(cubes.front()).z);
+
+    std::cout <<cubes.front()->I0_1[0] << cubes.front()->I0_1[1] << cubes.front()->I0_1[2] << std::endl;
+    std::cout <<cubes.front()->r.w <<","<< cubes.front()->r.x <<","<< cubes.front()->r.y <<","<< cubes.front()->r.z << std::endl;
 
     printf("\n");
     printf("Simulating........\n");

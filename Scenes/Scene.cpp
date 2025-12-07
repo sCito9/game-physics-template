@@ -53,8 +53,8 @@ void Scene::simStep(float timeStep) {
                     glm::vec3 v_Cp_b = otherCube->cm_linearVelocity + otherCube->rot*(collisionInfo.collisionPointWorld - otherCube->cm_pos);
                     glm::vec3 v_rel = v_Cp_a - v_Cp_b;
                     if (glm::dot(v_rel, collisionInfo.normalWorld) <= 0) {
-                        glm::vec3 x_a = cube->cm_pos;
-                        glm::vec3 x_b = otherCube->cm_pos;
+                        glm::vec3 x_a = collisionInfo.collisionPointWorld - cube->cm_pos;
+                        glm::vec3 x_b = collisionInfo.collisionPointWorld - otherCube->cm_pos;
                         float J = -(1 + collisionElasticity) * glm::dot(v_rel, collisionInfo.normalWorld);
                         J = J/(1/cube->M + 1/otherCube->M + glm::dot((cube->I_1 * glm::cross((glm::cross(x_a, collisionInfo.normalWorld)), x_a)), collisionInfo.normalWorld) + glm::dot((otherCube->I_1 * glm::cross(glm::cross(x_b, collisionInfo.normalWorld), x_b)), collisionInfo.normalWorld));
 

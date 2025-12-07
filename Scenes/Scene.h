@@ -44,3 +44,8 @@ public:
     void simStep(float timeStep);
     void addForce(Rigidbody_Cube *cube, glm::vec3 pos, glm::vec3 force);
 };
+
+inline std::ostream& operator << (std::ostream& os, const glm::vec3& v) {
+    os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+    return os;
+}

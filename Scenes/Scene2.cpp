@@ -11,7 +11,7 @@ void Scene2::init() {
     glm::mat3 initialRotation = glm::mat3(cos(glm::pi<float>() / 2), -sin(glm::pi<float>() / 2), 0,
                                         sin(glm::pi<float>() / 2), cos(glm::pi<float>() /2), 0,
                                         0, 0, 1);
-    cubes.emplace_back(new Rigidbody_Cube({0, 0, 0}, glm::toQuat(initialRotation), {0, 0, 0}, 1.f, 0.6f, 0.5f, 2));
+    cubes.emplace_back(new Rigidbody_Cube({0, 0, 0}, glm::toQuat(initialRotation), {0, 0, 0}, 1.f, 0.6f, 0.5f, 2.f));
     cubes.front()->ForcePosQueue.push_back(glm::vec3(0.3f, 0.5f, 0.25f));
     cubes.front()->ForceDirQueue.push_back(glm::vec3(1, 1, 0));
 }
