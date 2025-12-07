@@ -19,7 +19,7 @@ class Complex_Simulation_Rb : public Scene
     void resetForces();
     void simulateCube(Cube* obj);
     void simulatePointsWorldSpace(Cube* obj);
-    glm::mat4 getWorldFromObj(Cube cube);
+    glm::mat4 getWorldFromObj(Cube* cube);
     void checkCollisions(Cube* cube_array[]);
     void calculateCollision(CollisionInfo hitInfo, Cube* cube_1, Cube* cube_2);
 
@@ -156,7 +156,7 @@ class Complex_Simulation_Rb : public Scene
             glm::vec3(2.f, -2.f, -2.f), glm::vec3(2.f, -2.f, 2.f)
         },
         {
-            glm::vec3(1.f, 2.f, 2.f), glm::vec3(1.f, 2.f, -2.f),
+            glm::vec3(100.f, 2.f, 2.f), glm::vec3(1.f, 2.f, -2.f),
             glm::vec3(1.f, -2.f, -2.f), glm::vec3(1.f, -2.f, 2.f),
             glm::vec3(5.f, 2.f, 2.f), glm::vec3(5.f, 2.f, -2.f),
             glm::vec3(5.f, -2.f, -2.f), glm::vec3(5.f, -2.f, 2.f)
@@ -175,8 +175,11 @@ class Complex_Simulation_Rb : public Scene
         glm::vec3(0.f, 0.f, 0.f), 2.f, glm::vec3(4.f), false
     };
 
-    int array_length = 5;
-    Cube* cubes[5] = {&cube_1, &cube_2, &cube_3, &cube_4, &cube_wall};
+    int array_length = 4;
+    Cube* cubes[4] = {
+        &cube_1, &cube_2, &cube_3, &cube_4
+        // , &cube_wall
+    };
     //initialize w
     glm::vec3 w = glm::vec3(0.f);
 

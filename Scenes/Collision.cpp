@@ -122,11 +122,11 @@ void Collision::simulatePointsWorldSpace(Cube* obj)
     }
 }
 
-glm::mat4 Collision::getWorldFromObj(Cube cube)
+glm::mat4 Collision::getWorldFromObj(Cube* cube)
 {
-    glm::mat4 rotationMatrix = glm::toMat4(cube.orientation);
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), cube.scale);
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), cube.position_cm);
+    glm::mat4 rotationMatrix = glm::toMat4(cube->orientation);
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), cube->scale);
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), cube->position_cm);
     return translationMatrix * rotationMatrix * scaleMatrix;
 }
 
@@ -137,8 +137,8 @@ void Collision::checkCollisions(Cube* cube_array[])
     {
         for (int j = i + 1; j < array_length; ++j)
         {
-            glm::mat4 world_1 = getWorldFromObj(*cube_array[i]);
-            glm::mat4 world_2 = getWorldFromObj(*cube_array[j]);
+            glm::mat4 world_1 = getWorldFromObj(cube_array[i]);
+            glm::mat4 world_2 = getWorldFromObj(cube_array[j]);
             CollisionInfo hitInfo = collisionTools::checkCollisionSAT(world_1, world_2);
             if (hitInfo.isColliding)
             {
@@ -158,8 +158,11 @@ void Collision::calculateCollision(CollisionInfo hitInfo, Cube* cube_1, Cube* cu
         glm::cross(w_a, hitInfo.collisionPointWorld - cube_1->position_cm) - cube_2->velocity_cm - glm::cross(
             w_b, hitInfo.collisionPointWorld - cube_2->position_cm);
 
-    // float rel_normal_dot = glm::dot(pre_collision_relative_velocity, hitInfo.normalWorld);
-    //if (rel_normal_dot > 0.f) hitInfo.normalWorld = -hitInfo.normalWorld;
+    float rel_normal_dot = glm::dot(pre_collision_relative_velocity, hitInfo.normalWorld);
+    if (rel_normal_dot > 0.f) return;
+
+    glm::vec3 fromAtoB = cube_2->position_cm - cube_1->position_cm;
+    if (glm::dot(hitInfo.normalWorld, fromAtoB) < 0.f) hitInfo.normalWorld = -hitInfo.normalWorld;
 
 
     float J = (-(1 + c) * glm::dot(pre_collision_relative_velocity, hitInfo.normalWorld)) /
@@ -172,11 +175,17 @@ void Collision::calculateCollision(CollisionInfo hitInfo, Cube* cube_1, Cube* cu
                                                           hitInfo.normalWorld)),
                               hitInfo.collisionPointWorld - cube_2->position_cm), hitInfo.normalWorld));
 
-    cube_1->velocity_cm = cube_1->velocity_cm + J * hitInfo.normalWorld / cube_1->M;
-    cube_1->L = cube_1->L + glm::cross(hitInfo.collisionPointWorld - cube_1->position_cm, J * hitInfo.normalWorld);
+    if (!cube_1->isFixed)
+    {
+        cube_1->velocity_cm = cube_1->velocity_cm + J * hitInfo.normalWorld / cube_1->M;
+        cube_1->L = cube_1->L + glm::cross(hitInfo.collisionPointWorld - cube_1->position_cm, J * hitInfo.normalWorld);
+    }
 
-    cube_2->velocity_cm = cube_2->velocity_cm - J * hitInfo.normalWorld / cube_2->M;
-    cube_2->L = cube_2->L - glm::cross(hitInfo.collisionPointWorld - cube_2->position_cm, J * hitInfo.normalWorld);
+    if (!cube_2->isFixed)
+    {
+        cube_2->velocity_cm = cube_2->velocity_cm - J * hitInfo.normalWorld / cube_2->M;
+        cube_2->L = cube_2->L - glm::cross(hitInfo.collisionPointWorld - cube_2->position_cm, J * hitInfo.normalWorld);
+    }
 }
 
 

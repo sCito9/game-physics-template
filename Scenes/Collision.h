@@ -19,7 +19,7 @@ class Collision : public Scene
     void resetForces();
     void simulateCube(Cube* obj);
     void simulatePointsWorldSpace(Cube* obj);
-    glm::mat4 getWorldFromObj(Cube cube);
+    glm::mat4 getWorldFromObj(Cube* cube);
     void checkCollisions(Cube* cube_array[]);
     void calculateCollision(CollisionInfo hitInfo, Cube* cube_1, Cube* cube_2);
 

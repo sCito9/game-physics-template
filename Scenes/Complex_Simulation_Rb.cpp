@@ -13,25 +13,25 @@ void Complex_Simulation_Rb::onDraw(Renderer& renderer)
     for (auto cube : cubes)
     {
         renderer.drawCube(cube->position_cm, cube->orientation, cube->scale, glm::vec4(1, 0, 0, 1));
-       /* for (auto vertex : cube->points_world_space)
-        {
-            renderer.drawSphere(vertex, 0.1f, glm::vec4(1, 0, 0, 1));
-        }
+        /* for (auto vertex : cube->points_world_space)
+         {
+             renderer.drawSphere(vertex, 0.1f, glm::vec4(1, 0, 0, 1));
+         }
 
-        renderer.drawCube(cube->position_cm, cube->orientation, cube->scale, glm::vec4(1, 0, 0, 1));
+         renderer.drawCube(cube->position_cm, cube->orientation, cube->scale, glm::vec4(1, 0, 0, 1));
 
-        renderer.drawLine(cube->points_world_space[0], cube->points_world_space[1], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[0], cube->points_world_space[3], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[0], cube->points_world_space[4], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[1], cube->points_world_space[2], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[1], cube->points_world_space[5], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[2], cube->points_world_space[3], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[2], cube->points_world_space[6], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[3], cube->points_world_space[7], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[4], cube->points_world_space[5], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[4], cube->points_world_space[7], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[5], cube->points_world_space[6], glm::vec4(0, 1, 0, 1));
-        renderer.drawLine(cube->points_world_space[6], cube->points_world_space[7], glm::vec4(0, 1, 0, 1));*/
+         renderer.drawLine(cube->points_world_space[0], cube->points_world_space[1], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[0], cube->points_world_space[3], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[0], cube->points_world_space[4], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[1], cube->points_world_space[2], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[1], cube->points_world_space[5], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[2], cube->points_world_space[3], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[2], cube->points_world_space[6], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[3], cube->points_world_space[7], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[4], cube->points_world_space[5], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[4], cube->points_world_space[7], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[5], cube->points_world_space[6], glm::vec4(0, 1, 0, 1));
+         renderer.drawLine(cube->points_world_space[6], cube->points_world_space[7], glm::vec4(0, 1, 0, 1));*/
     }
 }
 
@@ -143,11 +143,11 @@ void Complex_Simulation_Rb::simulatePointsWorldSpace(Cube* obj)
     }
 }
 
-glm::mat4 Complex_Simulation_Rb::getWorldFromObj(Cube cube)
+glm::mat4 Complex_Simulation_Rb::getWorldFromObj(Cube* cube)
 {
-    glm::mat4 rotationMatrix = glm::toMat4(cube.orientation);
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), cube.scale);
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), cube.position_cm);
+    glm::mat4 rotationMatrix = glm::toMat4(cube->orientation);
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), cube->scale);
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), cube->position_cm);
     return translationMatrix * rotationMatrix * scaleMatrix;
 }
 
@@ -157,8 +157,8 @@ void Complex_Simulation_Rb::checkCollisions(Cube* cube_array[])
     {
         for (int j = i + 1; j < array_length; ++j)
         {
-            glm::mat4 world_1 = getWorldFromObj(*cube_array[i]);
-            glm::mat4 world_2 = getWorldFromObj(*cube_array[j]);
+            glm::mat4 world_1 = getWorldFromObj(cube_array[i]);
+            glm::mat4 world_2 = getWorldFromObj(cube_array[j]);
             CollisionInfo hitInfo = collisionTools::checkCollisionSAT(world_1, world_2);
             if (hitInfo.isColliding)
             {
@@ -178,8 +178,11 @@ void Complex_Simulation_Rb::calculateCollision(CollisionInfo hitInfo, Cube* cube
         glm::cross(w_a, hitInfo.collisionPointWorld - cube_1->position_cm) - cube_2->velocity_cm - glm::cross(
             w_b, hitInfo.collisionPointWorld - cube_2->position_cm);
 
-    // float rel_normal_dot = glm::dot(pre_collision_relative_velocity, hitInfo.normalWorld);
-    //if (rel_normal_dot > 0.f) hitInfo.normalWorld = -hitInfo.normalWorld;
+    float rel_normal_dot = glm::dot(pre_collision_relative_velocity, hitInfo.normalWorld);
+    if (rel_normal_dot > 0.f) return;
+
+    glm::vec3 fromAtoB = cube_2->position_cm - cube_1->position_cm;
+    if (glm::dot(hitInfo.normalWorld, fromAtoB) < 0.f) hitInfo.normalWorld = -hitInfo.normalWorld;
 
 
     float J = (-(1 + c) * glm::dot(pre_collision_relative_velocity, hitInfo.normalWorld)) /
