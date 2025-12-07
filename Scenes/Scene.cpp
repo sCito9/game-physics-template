@@ -49,8 +49,8 @@ void Scene::simStep(float timeStep) {
                     }
                     detectedCollisions.emplace_back(std::make_tuple(cube, otherCube));
 
-                    glm::vec3 v_Cp_a = cube->cm_linearVelocity + cube->rot*(collisionInfo.collisionPointWorld - cube->cm_pos);
-                    glm::vec3 v_Cp_b = otherCube->cm_linearVelocity + otherCube->rot*(collisionInfo.collisionPointWorld - otherCube->cm_pos);
+                    glm::vec3 v_Cp_a = cube->cm_linearVelocity + glm::cross(cube->angularVelocity, (collisionInfo.collisionPointWorld - cube->cm_pos));
+                    glm::vec3 v_Cp_b = otherCube->cm_linearVelocity + glm::cross(otherCube->angularVelocity, (collisionInfo.collisionPointWorld - otherCube->cm_pos));
                     glm::vec3 v_rel = v_Cp_a - v_Cp_b;
                     if (glm::dot(v_rel, collisionInfo.normalWorld) <= 0) {
                         glm::vec3 x_a = collisionInfo.collisionPointWorld - cube->cm_pos;
