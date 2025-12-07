@@ -29,14 +29,14 @@ class Complex_Simulation_Rb : public Scene
     float c = 1.f;
     bool gravity = false;
 
-    Cube cube_wall = {
+    /*Cube cube_wall = {
         glm::vec3(0.f, 0.f, -20.f), glm::vec3(0.f, 0.f, 0.f),
         //point positions:
         {
-            glm::vec3(-70.f, 70.f, 2.f), glm::vec3(-70.f, 70.f, -2.f),
-            glm::vec3(-70.f, -70.f, -2.f), glm::vec3(-70.f, -70.f, 2.f),
-            glm::vec3(70.f, 70.f, 2.f), glm::vec3(70.f, 70.f, -2.f),
-            glm::vec3(70.f, -70.f, -2.f), glm::vec3(70.f, -70.f, 2.f)
+            glm::vec3(-70.f, 70.f, 2.f), glm::vec3(-70.f, 70.f, -8.f),
+            glm::vec3(-70.f, -70.f, -8.f), glm::vec3(-70.f, -70.f, 2.f),
+            glm::vec3(70.f, 70.f, 2.f), glm::vec3(70.f, 70.f, -8.f),
+            glm::vec3(70.f, -70.f, -8.f), glm::vec3(70.f, -70.f, 2.f)
         },
         {
             glm::vec3(-70.f, 70.f, -18.f), glm::vec3(-70.f, 70.f, -22.f),
@@ -44,19 +44,19 @@ class Complex_Simulation_Rb : public Scene
             glm::vec3(70.f, 70.f, -18.f), glm::vec3(70.f, 70.f, -22.f),
             glm::vec3(70.f, -70.f, -22.f), glm::vec3(70.f, -70.f, -18.f)
         },
-        {0.f, 0.f, 0.f, 0.f}, glm::inverse(
-            glm::mat3(
-                8.f, 0.f, 0.f,
-                0.f, 8.f, 0.f,
-                0.f, 0.f, 8.f
-            )),
-        glm::inverse(glm::mat3(
-            8.f, 0.f, 0.f,
-            0.f, 8.f, 0.f,
-            0.f, 0.f, 8.f
-        )),
-        glm::vec3(0.f, 0.f, 0.f), 100.f, glm::vec3(140.f, 140.f, 4.f), true
-    };
+        {0.f, 0.f, 0.f, 0.f},
+        glm::mat3(
+            0.f, 0.f, 0.f,
+            0.f, 0.f, 0.f,
+            0.f, 0.f, 0.f
+        ),
+        glm::mat3(
+            0.f, 0.f, 0.f,
+            0.f, 0.f, 0.f,
+            0.f, 0.f, 0.f
+        ),
+        glm::vec3(0.f, 0.f, 0.f), std::numeric_limits<float>::infinity(), glm::vec3(140.f, 140.f, 10.f), true
+    };*/
 
 
     //pre compute
@@ -177,8 +177,9 @@ class Complex_Simulation_Rb : public Scene
 
     int array_length = 4;
     Cube* cubes[4] = {
-        &cube_1, &cube_2, &cube_3, &cube_4
-        // , &cube_wall
+        &cube_1, &cube_2, &cube_3,
+        &cube_4
+        //, &cube_wall
     };
     //initialize w
     glm::vec3 w = glm::vec3(0.f);
