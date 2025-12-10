@@ -17,10 +17,18 @@ void Scene2::init() {
 }
 
 void Scene2::onGUI() {
+    ImGui::Text("realDeltaTime: actually calls the update function every timestep frames. \n"
+                "   -> with a timestep of 2 it will only call it every 2 seconds, which will look laggy. \n"
+                "   Disable to simulate a custom passing of time, where the update function gets called every frame\n"
+                "Space: Stop and Resume the Simulation\n"
+                "W, A, S, D: Move the box perpendicular to the view direction\n"
+                "E: Rotate the box clockwise with respect to the view direction\n"
+                "Q: Rotate the box counterclockwise with respect to the view direction\n");
     ImGui::SliderFloat("TimeStep", &timeStep, 0.001f, 2.0f);
     if (ImGui::IsKeyReleased(ImGuiKey_Space)) {
         shouldSimulate = !shouldSimulate;
     }
+    ImGui::Checkbox("realDeltaTime", &realDeltaTime);
 }
 
 
@@ -31,10 +39,15 @@ void Scene2::simulateStep() {
 
     handleInput(cubes.front());
 
-    float realTimeDt = ImGui::GetIO().DeltaTime;
+    if (realDeltaTime) {
+        float realTimeDt = ImGui::GetIO().DeltaTime;
 
-    currentTime += realTimeDt;
-    for (; currentTime >= timeStep; currentTime -= timeStep) {
+        currentTime += realTimeDt;
+        for (; currentTime >= timeStep; currentTime -= timeStep) {
+            simStep(timeStep);
+        }
+    }
+    else {
         simStep(timeStep);
     }
 }

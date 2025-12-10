@@ -93,8 +93,8 @@ add_executable(Template
         Scenes/Scene2.h
 		Scenes/Scene3.cpp
 		Scenes/Scene3.h
-        Scenes/Scene4.cpp
-        Scenes/Scene4.h
+		Scenes/Scene4.cpp
+		Scenes/Scene4.h
 )
 
 if(UNIX AND NOT APPLE)

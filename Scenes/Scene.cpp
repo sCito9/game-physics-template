@@ -9,7 +9,7 @@ void Scene::onDraw(Renderer &renderer)
 
     for (Rigidbody_Cube *cube : cubes) {
         renderer.drawSphere(cube->cm_pos, 0.1f, {0, 0, 1, 1});
-        renderer.drawCube(cube->cm_pos, cube->r, cube->scale, {1, 0, 0, .5f});
+        renderer.drawCube(cube->cm_pos, cube->r, cube->scale, {1, 0, 0, 1.f});
     }
 
     cameraMatrix = renderer.camera.viewMatrix;

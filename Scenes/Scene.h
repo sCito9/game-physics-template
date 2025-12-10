@@ -32,6 +32,7 @@ public:
     float timeStep = 0.01f;
     float collisionElasticity = .5f;
     bool shouldSimulate = true;
+    bool realDeltaTime = true;
     std::list<Rigidbody_Cube*> cubes;
     std::list<std::tuple<Rigidbody_Cube*, Rigidbody_Cube*>> detectedCollisions = {};
 
@@ -42,7 +43,7 @@ public:
     glm::vec3 up = glm::vec3(0, 0, 1);
 
     void simStep(float timeStep);
-    void addForce(Rigidbody_Cube *cube, glm::vec3 pos, glm::vec3 force);
+    void addForce(Rigidbody_Cube *cube, glm::vec3 pos, glm::vec3 force);    //pos im local space
 };
 
 inline std::ostream& operator << (std::ostream& os, const glm::vec3& v) {
