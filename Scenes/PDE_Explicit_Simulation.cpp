@@ -22,6 +22,19 @@ void PDE_Explicit_Simulation::onGUI()
 {
     ImGui::SliderFloat("Diffusity", &v, 0.01f, 1.f);
     ImGui::SliderFloat("time step", &delta_t, 0.0001f, 1.f);
+
+    auto button = ImGui::Button("Print values");
+    if (button)
+    {
+        for (auto row : M)
+        {
+            for (auto value : row)
+            {
+                std::cout << value << " , ";
+            }
+            std::cout << std::endl;
+        }
+    }
 }
 
 void PDE_Explicit_Simulation::simulateStep()
