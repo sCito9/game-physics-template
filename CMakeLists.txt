@@ -89,6 +89,7 @@ add_executable(Template
 		Scenes/Ex2/Rigidbody.h
 		Scenes/Ex2/Scene_2.h
 		Scenes/Ex2/Scene_3.h
+		Scenes/Ex2/Scene_4.h
 )
 
 if(UNIX AND NOT APPLE)

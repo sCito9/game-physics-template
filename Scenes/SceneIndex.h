@@ -4,6 +4,7 @@
 #include "Scenes/Ex2/Scene_1.h"
 #include "Scenes/Ex2/Scene_2.h"
 #include "Scenes/Ex2/Scene_3.h"
+#include "Scenes/Ex2/Scene_4.h"
 
 using SceneCreator = std::function<std::unique_ptr<Scene>()>;
 
@@ -27,4 +28,5 @@ std::map<std::string, SceneCreator> scenesCreators = {
     {"Single Step", creator<Scene_1>()},
     {"Simulation", creator<Scene_2>()},
     {"Collision", creator<Scene_3>()},
+    {"Complex", creator<Scene_4>()},
 };

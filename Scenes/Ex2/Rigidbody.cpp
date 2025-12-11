@@ -1,7 +1,8 @@
 #include "Rigidbody.h"
 #include "glm/gtx/quaternion.hpp"
 
-CuboidRigidbody initializeCuboidRb(glm::vec3 x_cm_0, glm::vec3 dimensions, float M, glm::vec3 rotation_0, glm::vec3 v_cm_0, glm::vec3 L_0) {
+CuboidRigidbody initializeCuboidRb(glm::vec3 x_cm_0, glm::vec3 dimensions, float M,
+                                   glm::vec3 rotation_0, glm::vec3 v_cm_0, glm::vec3 L_0) {
     auto rb = CuboidRigidbody {0};
 
     rb.M = M;
@@ -17,6 +18,36 @@ CuboidRigidbody initializeCuboidRb(glm::vec3 x_cm_0, glm::vec3 dimensions, float
     rb.I[0][0] = konst / (h*h + d*d);
     rb.I[1][1] = konst / (w*w + h*h);
     rb.I[2][2] = konst / (w*w + d*d);
+
+    rb.v_cm = v_cm_0;
+
+    rb.r = glm::quat(rotation_0);
+    normalize(rb.r);
+
+    rb.L = L_0;
+
+    glm::mat3x3 Rot_r = toMat3(rb.r);
+    glm::mat3x3 I_cur = Rot_r * rb.I * transpose(Rot_r);
+
+    rb.w = I_cur * L_0;
+
+    rb.f[0] = glm::vec3(0, 0, -9.81f * rb.M);
+    /* f[1] = 0 */
+
+    return rb;
+}
+
+CuboidRigidbody initializeHeavyCuboidRb(glm::vec3 x_cm_0, glm::vec3 dimensions,
+                                        glm::vec3 rotation_0, glm::vec3 v_cm_0, glm::vec3 L_0) {
+    auto rb = CuboidRigidbody {0};
+
+    rb.M = +std::numeric_limits<float>::infinity();
+
+    rb.x_cm = x_cm_0;
+
+    /* x_i unused, therefore omitted */
+
+    /* Inverse inertia tensor already 0 */
 
     rb.v_cm = v_cm_0;
 
@@ -69,6 +100,11 @@ void simulateCuboidRb(CuboidRigidbody *rb, float h, glm::vec3 *f_i, uint8_t nFor
     simulateCuboidRb(rb, h, f_i, f_x_i, nForces);
 }
 
+void simulateCuboidRb(CuboidRigidbody *rb, float h) {
+    auto f_i_x = new glm::vec3[]{rb->x_cm, rb->x_cm};
+    simulateCuboidRb(rb, h, rb->f, f_i_x, 2);
+}
+
 glm::mat4 getWorldFromObj(CuboidRigidbody *rb, glm::vec3 dimensions) {
     glm::mat4 rotationMatrix = glm::toMat4(rb->r);
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1), dimensions);
@@ -77,13 +113,37 @@ glm::mat4 getWorldFromObj(CuboidRigidbody *rb, glm::vec3 dimensions) {
 }
 
 float calculateImpulseFromCollision(glm::vec3 v_rel, glm::vec3 n, CuboidRigidbody *rb_a, CuboidRigidbody *rb_b) {
-    const float c = 1;
-    float numerator = -(1 + c) * dot(v_rel, n);
+    const float c = 1.0f;
+
+    float d = dot(v_rel, n);
+    if (d >= 0) {
+        return 0;
+    }
+    float numerator = -(1 + c) * d;
+
     glm::mat3x3 Rot_r = toMat3(rb_a->r);
     glm::mat3x3 I_a = Rot_r * rb_a->I * transpose(Rot_r);
+
     Rot_r = toMat3(rb_b->r);
     glm::mat3x3 I_b = Rot_r * rb_b->I * transpose(Rot_r);
+
     float denominator = 1/rb_a->M + 1/rb_b->M + dot((cross(I_a * cross(rb_a->x_cm, n), rb_a->x_cm)
             + cross(I_b * cross(rb_b->x_cm, n), rb_b->x_cm)), n);
+
     return numerator / denominator;
+}
+
+void applyImpulse(float J, glm::vec3 n, CuboidRigidbody *rb_a, CuboidRigidbody *rb_b) {
+    if (J == 0) return;
+
+    rb_a->v_cm += J * n / rb_a->M;
+    rb_b->v_cm -= J * n / rb_b->M;
+
+    rb_a->L += cross(rb_a->x_cm ,J * n);
+    rb_b->L -= cross(rb_b->x_cm ,J * n);
+}
+
+void applyImpulse(float J, glm::vec3 n, CuboidRigidbody *rb_a) {
+    rb_a->v_cm += J * n / rb_a->M;
+    rb_a->L += cross(rb_a->x_cm ,J * n);
 }

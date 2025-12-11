@@ -34,12 +34,11 @@ void Scene_2::simulateStep() {
 }
 
 void Scene_2::handleInput() {
-    if(ImGui::IsMouseReleased(ImGuiMouseButton_Right)){
+    if(ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
         auto drag = ImGui::GetMouseDragDelta(1);
         if(!(drag.x == 0 && drag.y == 0)){
             auto dx = drag.x * right;
             auto dy = -drag.y * up;
-            std::cout << "\n lines: " << hRez << std::endl;
             F[nForces] = (dx + dy) / (4.0f * (float)hRez);
             F_x[nForces] = rb.x_cm;
             nForces++;

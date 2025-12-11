@@ -15,7 +15,7 @@ void Scene_3::onDraw(Renderer &renderer) {
             glm::vec4(1,0.13f,0.3f,1)); // color
 
     renderer.drawWireCube(glm::vec3(0),
-                          13.f * dimensions,
+                          glm::vec3(42),
                           glm::vec3(1));
 
     cameraMatrix = renderer.camera.viewMatrix;
@@ -36,22 +36,24 @@ void Scene_3::simulateStep() {
     for (; curDeltaT >= h; curDeltaT -= h) {
         simulateCuboidRb(&rb1, h, F, nForces);
         simulateCuboidRb(&rb2, h, F, nForces);
+
+        glm::mat4 rb1_mat = getWorldFromObj(&rb1, dimensions);
+        glm::mat4 rb2_mat = getWorldFromObj(&rb2, dimensions);
+
+        CollisionInfo collisionInfo = collisionTools::checkCollisionSAT(rb1_mat, rb2_mat);
+        if (collisionInfo.isColliding) {
+            glm::vec3 v1 = rb1.v_cm + cross(rb1.w, collisionInfo.collisionPointWorld - rb1.x_cm);
+            glm::vec3 v2 = rb2.v_cm + cross(rb2.w, collisionInfo.collisionPointWorld - rb2.x_cm);
+            float J = calculateImpulseFromCollision(v1-v2, collisionInfo.normalWorld, &rb1, &rb2);
+            std::cout << "n=" << collisionInfo.normalWorld << " J=" << J << std::endl;
+            applyImpulse(J, collisionInfo.normalWorld, &rb1, &rb2);
+        }
     }
     nForces = 1;
-
-    glm::mat4 rb1_mat = getWorldFromObj(&rb1, dimensions);
-    glm::mat4 rb2_mat = getWorldFromObj(&rb2, dimensions);
-    CollisionInfo collisionInfo = collisionTools::checkCollisionSAT(rb1_mat, rb2_mat);
-
-    if (!collisionInfo.isColliding) return;
-
-    glm::vec3 v1 = rb1.v_cm + cross(rb1.w, collisionInfo.collisionPointWorld - rb1.x_cm);
-    glm::vec3 v2 = rb2.v_cm + cross(rb2.w, collisionInfo.collisionPointWorld - rb2.x_cm);
-    float J = calculateImpulseFromCollision(v1-v2, collisionInfo.normalWorld, &rb1, &rb2);
 }
 
 void Scene_3::handleInput() {
-    if(ImGui::IsMouseReleased(ImGuiMouseButton_Right)){
+    if(ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
         auto drag = ImGui::GetMouseDragDelta(1);
         if(!(drag.x == 0 && drag.y == 0)){
             auto dx = drag.x * right;
@@ -75,17 +77,17 @@ void Scene_3::onGUI() {
 }
 
 void Scene_3::init() {
-    rb1 = initializeCuboidRb(glm::vec3(-3, 0, 8),
+    rb1 = initializeCuboidRb(rb1_x_0,
                             dimensions,
-                            2.0f,
-                            glm::vec3(0.f, 0.f, glm::radians(90.0f)),
+                            Mass,
+                            rb1_r_0,
                             glm::vec3(0),
                             glm::vec3(0));
 
-    rb2 = initializeCuboidRb(glm::vec3(3, 0 ,8),
+    rb2 = initializeCuboidRb(rb2_x_0,
                             dimensions,
-                            2.0f,
-                            glm::vec3(glm::radians(0.0f), glm::radians(45.0f), glm::radians(45.0f)),
+                            Mass,
+                            rb2_r_0,
                             glm::vec3(0),
                             glm::vec3(0));
 

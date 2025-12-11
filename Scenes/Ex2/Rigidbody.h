@@ -24,6 +24,9 @@ struct CuboidRigidbody {
 
     /// @brief Angular momentum
     glm::vec3 L;
+
+    /// @brief f_i for [0]->gravity and [1]->extF
+    glm::vec3 f[2];
 };
 
 inline std::ostream& operator << (std::ostream& os, const glm::quat& q) {
@@ -38,12 +41,24 @@ CuboidRigidbody initializeCuboidRb(glm::vec3 x_cm_0,
                                    glm::vec3 v_cm_0,
                                    glm::vec3 L_0);
 
+CuboidRigidbody initializeHeavyCuboidRb(glm::vec3 x_cm_0,
+                                        glm::vec3 dimensions,
+                                        glm::vec3 rotation_0,
+                                        glm::vec3 v_cm_0,
+                                        glm::vec3 L_0);
+
 void printRb(CuboidRigidbody* rb);
 
 void simulateCuboidRb(CuboidRigidbody* rb, float h, glm::vec3 *f_i, glm::vec3 *f_i_x, uint8_t nForces);
 
 void simulateCuboidRb(CuboidRigidbody* rb, float h, glm::vec3 *f_i, uint8_t nForces);
 
+void simulateCuboidRb(CuboidRigidbody *rb, float h);
+
 glm::mat4 getWorldFromObj(CuboidRigidbody* rb, glm::vec3 dimensions);
 
 float calculateImpulseFromCollision(glm::vec3 v_rel, glm::vec3 n, CuboidRigidbody* rb_a, CuboidRigidbody* rb_b);
+
+void applyImpulse(float J, glm::vec3 n, CuboidRigidbody *rb_a, CuboidRigidbody *rb_b);
+
+void applyImpulse(float J, glm::vec3 n, CuboidRigidbody *rb_a);
