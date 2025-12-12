@@ -8,16 +8,6 @@
 
 #include "util/CollisionDetection.h"
 
-glm::quat multiplication(glm::quat q1, glm::quat q2)
-{
-    float s1 = q1.w;
-    float s2 = q2.w;
-    glm::vec3 v1 = glm::vec3(q1.x, q1.y, q1.z);
-    glm::vec3 v2 = glm::vec3(q2.x, q2.y, q2.z);
-
-    return glm::quat(s1 * s2 - glm::dot(v1, v2), s1 * v2 + s2 * v1 + glm::cross(v1, v2));
-}
-
 
 void simulateCube(Cube* obj, glm::vec3 F, glm::vec3 force_position, bool gravity, float step_size)
 {
@@ -35,9 +25,7 @@ void simulateCube(Cube* obj, glm::vec3 F, glm::vec3 force_position, bool gravity
     obj->velocity_cm += step_size * F_gravity / obj->M;
 
     //rotation
-    glm::quat temp = step_size / 2.f * multiplication(obj->orientation, glm::quat(0.f, obj->w.x, obj->w.y, obj->w.z));
-    obj->orientation = glm::quat(obj->orientation.w + temp.w, obj->orientation.x + temp.x, obj->orientation.y + temp.y,
-                                 obj->orientation.z + temp.z);
+    obj->orientation += step_size / 2.f * glm::quat(0.f, obj->w.x, obj->w.y, obj->w.z) * obj->orientation;
     obj->orientation = glm::normalize(obj->orientation);
 
     //angular momentum

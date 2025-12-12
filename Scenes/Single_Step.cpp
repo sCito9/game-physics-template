@@ -30,16 +30,28 @@ void Single_Step::init()
     std::cout << "Center of Mass Angular Velocity: vec3(" << cube.L.x << ", " << cube.L.y << ", " << cube.L.z << ")" <<
         std::endl;
 
-
+    //As you have a mistake on the task description (x is defined differently two times) i will print it both ways
     //world position of point x_i
     glm::vec3 x_i = glm::vec3(-0.3f, -0.5f, -0.25f);
     x_i = cube.position_cm + glm::mat3_cast(cube.orientation) * x_i;
 
-    glm::vec3 v_i = cube.velocity_cm + glm::cross(cube.w, x_i);
+    glm::vec3 v_i = cube.velocity_cm + glm::cross(cube.w, glm::vec3(-0.3f, -0.5f, -0.25f));
 
     std::cout << "\n\n\nUpdated Point State:" << std::endl;
     std::cout << "\nPoint Position: vec3(" << x_i.x << ", " << x_i.y << ", " << x_i.z << ")" << std::endl;
     std::cout << "Point Velocity: vec3(" << v_i.x << ", " << v_i.y << ", " << v_i.z << ")" <<
+        std::endl;
+    std::cout << std::endl;
+
+
+    glm::vec3 x_i_pos = glm::vec3(0.3f, 0.5f, 0.25f);
+    x_i_pos = cube.position_cm + glm::mat3_cast(cube.orientation) * x_i_pos;
+
+    glm::vec3 v_i_pos = cube.velocity_cm + glm::cross(cube.w, glm::vec3(0.3f, 0.5f, 0.25f));
+
+    std::cout << "\n\n\nUpdated Point State positive values:" << std::endl;
+    std::cout << "\nPoint Position: vec3(" << x_i_pos.x << ", " << x_i_pos.y << ", " << x_i_pos.z << ")" << std::endl;
+    std::cout << "Point Velocity: vec3(" << v_i_pos.x << ", " << v_i_pos.y << ", " << v_i_pos.z << ")" <<
         std::endl;
 }
 

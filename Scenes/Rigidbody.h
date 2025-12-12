@@ -12,7 +12,6 @@ struct Cube;
 struct CollisionInfo;
 
 
-glm::quat multiplication(glm::quat q1, glm::quat q2);
 void simulateCube(Cube* obj, glm::vec3 F, glm::vec3 force_position, bool gravity, float step_size);
 glm::mat4 getWorldFromObj(Cube* cube);
 void checkCollisions(std::vector<Cube*> cubes, float c);
