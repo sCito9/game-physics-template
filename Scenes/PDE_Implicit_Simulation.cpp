@@ -113,7 +113,6 @@ void PDE_Implicit_Simulation::solveImplicitMatrix(std::vector<std::vector<float>
     }
 }
 
-
 void PDE_Implicit_Simulation::solveImplicitHeatInteriorAt(int i, int j, std::vector<std::vector<float>> M_old)
 {
     int k = i + j * M_old[0].size();
