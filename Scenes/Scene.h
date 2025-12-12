@@ -33,15 +33,13 @@ struct Cube
 {
     glm::vec3 position_cm;
     glm::vec3 velocity_cm;
-    glm::vec3 points[8];
-    glm::vec3 points_world_space[8];
     glm::quat orientation;
     glm::mat3 I_inv;
-    glm::mat3 I;
+    glm::mat3 I_body;
     glm::vec3 L;
     float M;
     glm::vec3 scale;
-    bool isFixed;
+    glm::vec3 w;
 };
 
 
