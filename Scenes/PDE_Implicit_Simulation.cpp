@@ -131,22 +131,22 @@ void PDE_Implicit_Simulation::solveImplicitHeatInteriorAt(int i, int j, std::vec
     //oben
     if (i > 0)
     {
-        sparse_matrix.set_element(k, (i - 1) + j * M_old[0].size(), -a_x);
+        sparse_matrix.set_element(k, (i - 1) + j * M_old[0].size(), -a_y);
     }
     //unten
     if (i < M_old.size() - 1)
     {
-        sparse_matrix.set_element(k, (i + 1) + j * M_old[0].size(), -a_x);
+        sparse_matrix.set_element(k, (i + 1) + j * M_old[0].size(), -a_y);
     }
     //rechts
     if (j > 0)
     {
-        sparse_matrix.set_element(k, i + (j - 1) * M_old[0].size(), -a_y);
+        sparse_matrix.set_element(k, i + (j - 1) * M_old[0].size(), -a_x);
     }
     //links
     if (j < M_old[0].size() - 1)
     {
-        sparse_matrix.set_element(k, i + (j + 1) * M_old[0].size(), -a_y);
+        sparse_matrix.set_element(k, i + (j + 1) * M_old[0].size(), -a_x);
     }
 }
 
