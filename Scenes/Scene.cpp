@@ -85,7 +85,7 @@ void Scene::simStep(float timeStep) {
         cube->cm_pos += timeStep * cube->cm_linearVelocity;
         cube->cm_linearVelocity += timeStep * cube->F / cube->M;
 
-        cube->r += timeStep/2 * glm::quat(0, cube->angularVelocity) * cube->r;
+        cube->r += timeStep/2.f * glm::quat(0, cube->angularVelocity) * cube->r;
         cube->r = glm::normalize(cube->r);
         cube->rot = glm::toMat3(cube->r);
 
