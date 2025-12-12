@@ -21,11 +21,12 @@ void PDE_Explicit_Simulation::onDraw(Renderer& renderer)
 void PDE_Explicit_Simulation::onGUI()
 {
     ImGui::SliderFloat("Diffusity", &v, 0.01f, 1.f);
-    ImGui::SliderFloat("time step", &delta_t, 0.0001f, 1.f);
+    ImGui::SliderFloat("time step", &delta_t, 0.001f, 1.f);
 
     auto button = ImGui::Button("Print values");
     if (button)
     {
+        std::cout << "Heatmap M: " << std::endl;
         for (auto row : M)
         {
             for (auto value : row)
@@ -34,8 +35,10 @@ void PDE_Explicit_Simulation::onGUI()
             }
             std::cout << std::endl;
         }
+        std::cout << std::endl;
     }
 }
+
 
 void PDE_Explicit_Simulation::simulateStep()
 {

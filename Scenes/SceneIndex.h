@@ -2,6 +2,7 @@
 #include <map>
 
 #include "PDE_Explicit_Simulation.h"
+#include "PDE_Implicit_Simulation.h"
 #include "PDE_Single_Step.h"
 
 
@@ -18,7 +19,8 @@ SceneCreator creator()
 
 std::map<std::string, SceneCreator> scenesCreators = {
     {"Single Step", creator<PDE_Single_Step>()},
-    {"Explicit Simulation", creator<PDE_Explicit_Simulation>()}
+    {"Explicit Simulation", creator<PDE_Explicit_Simulation>()},
+    {"Implicit Simulation", creator<PDE_Implicit_Simulation>()}
 
     // add more Scene types here
 };
