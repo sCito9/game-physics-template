@@ -109,6 +109,8 @@ add_executable(Template
         Scenes/PDE_Implicit_Simulation.h
         Scenes/Rigidbody.cpp
         Scenes/Rigidbody.h
+        Scenes/PDE_Interactive_Simulation.cpp
+        Scenes/PDE_Interactive_Simulation.h
 )
 
 if (UNIX AND NOT APPLE)

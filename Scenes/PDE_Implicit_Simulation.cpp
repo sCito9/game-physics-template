@@ -66,7 +66,7 @@ void PDE_Implicit_Simulation::simulateStep()
 void PDE_Implicit_Simulation::init()
 {
     initializeRandomNoise();
-    sparse_matrix = SparseMatrix<float>(M.size() * M[0].size(), 5); //fix expected nonzeros
+    sparse_matrix = SparseMatrix<float>(M.size() * M[0].size()); //fix expected nonzeros
     sparse_matrix.zero();
     rhs_b = std::vector<float>(M.size() * M[0].size(), 0.f);
     resetRhsB();
@@ -97,6 +97,7 @@ void PDE_Implicit_Simulation::solveImplicitMatrix(std::vector<std::vector<float>
         for (int j = 0; j < M_old[0].size(); ++j)
         {
             solveImplicitHeatInteriorAt(i, j, M_old);
+            enforceBoundaries();
         }
     }
     bool solve_result = sparse_solver.solve(sparse_matrix, rhs_b, result, final_residual, iterations_out);
@@ -115,7 +116,7 @@ void PDE_Implicit_Simulation::solveImplicitMatrix(std::vector<std::vector<float>
 
 void PDE_Implicit_Simulation::solveImplicitHeatInteriorAt(int i, int j, std::vector<std::vector<float>> M_old)
 {
-    int k = i + j * M_old[0].size();
+    int k = j + i * M_old[0].size();
 
     //rhs_b muss nicht geupdated werden, da alle randpunkte 0 sind und das in der rechnung auch zu einer 0 führt
 
@@ -131,22 +132,22 @@ void PDE_Implicit_Simulation::solveImplicitHeatInteriorAt(int i, int j, std::vec
     //oben
     if (i > 0)
     {
-        sparse_matrix.set_element(k, (i - 1) + j * M_old[0].size(), -a_y);
+        sparse_matrix.set_element(k, j + (i - 1) * M_old[0].size(), -a_y);
     }
     //unten
     if (i < M_old.size() - 1)
     {
-        sparse_matrix.set_element(k, (i + 1) + j * M_old[0].size(), -a_y);
+        sparse_matrix.set_element(k, j + (i + 1) * M_old[0].size(), -a_y);
     }
     //rechts
     if (j > 0)
     {
-        sparse_matrix.set_element(k, i + (j - 1) * M_old[0].size(), -a_x);
+        sparse_matrix.set_element(k, (j - 1) + i * M_old[0].size(), -a_x);
     }
     //links
     if (j < M_old[0].size() - 1)
     {
-        sparse_matrix.set_element(k, i + (j + 1) * M_old[0].size(), -a_x);
+        sparse_matrix.set_element(k, (j + 1) + i * M_old[0].size(), -a_x);
     }
 }
 
@@ -162,5 +163,23 @@ void PDE_Implicit_Simulation::initializeRandomNoise(float mean, float stddev)
         {
             M[i][j] = dist(gen);
         }
+    }
+}
+
+void PDE_Implicit_Simulation::enforceBoundaries()
+{
+    if (M.empty() || M[0].empty())
+        return;
+
+    for (int j = 0; j < M[0].size(); ++j)
+    {
+        M[0][j] = 0.f;
+        M[M.size() - 1][j] = 0.f;
+    }
+
+    for (int i = 0; i < M.size(); ++i)
+    {
+        M[i][0] = 0.f;
+        M[i][M[0].size() - 1] = 0.f;
     }
 }

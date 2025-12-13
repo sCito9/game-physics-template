@@ -35,8 +35,8 @@ class PDE_Implicit_Simulation : public Scene
         {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f}
     };
 
-    const float delta_x = 0.1f / (16 + 1);
-    const float delta_y = 0.1f / (16 + 1);
+    const float delta_x = 0.1f / (16 + 2);
+    const float delta_y = 0.1f / (16 + 2);
 
     SparsePCGSolver<float> sparse_solver = SparsePCGSolver<float>();
     SparseMatrix<float> sparse_matrix;
@@ -54,6 +54,7 @@ class PDE_Implicit_Simulation : public Scene
     void solveImplicitHeatInteriorAt(int i, int j, std::vector<std::vector<float>> M_old);
     void solveImplicitMatrix(std::vector<std::vector<float>> M_old);
     void initializeRandomNoise(float mean = 0.0f, float stddev = 1.0f);
+    void enforceBoundaries();
     void resetRhsB();
     void init() override;
     void onDraw(Renderer& renderer) override;

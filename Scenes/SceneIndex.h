@@ -5,6 +5,7 @@
 #include "Complex_Simulation_Rb.h"
 #include "PDE_Explicit_Simulation.h"
 #include "PDE_Implicit_Simulation.h"
+#include "PDE_Interactive_Simulation.h"
 #include "PDE_Single_Step.h"
 #include "Simulation.h"
 #include "Single_Step.h"
@@ -22,13 +23,11 @@ SceneCreator creator()
 }
 
 std::map<std::string, SceneCreator> scenesCreators = {
-    /*{"Single Step", creator<PDE_Single_Step>()},
+    {"Single Step", creator<PDE_Single_Step>()},
     {"Explicit Simulation", creator<PDE_Explicit_Simulation>()},
-    {"Implicit Simulation", creator<PDE_Implicit_Simulation>()}*/
-    {"Single Step", creator<Single_Step>()},
-    {"Simulation", creator<Simulation>()},
-    {"Collision", creator<Collision>()},
-    {"Complex Simulation", creator<Complex_Simulation_Rb>()}
+    {"Implicit Simulation", creator<PDE_Implicit_Simulation>()},
+    {"Interactive Simulation", creator<PDE_Interactive_Simulation>()}
+
 
     // add more Scene types here
 };
