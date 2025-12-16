@@ -2,7 +2,6 @@
 #include <list>
 
 #include "Renderer.h"
-#include "Rigidbody_Cube.h"
 
 /// @brief Scene base class. **Run `cmake . -B build` after adding new files to the scenes folder**
 ///
@@ -28,13 +27,20 @@ public:
     virtual void onGUI() {};
     virtual ~Scene() = default;
 
-    float currentTime = 0;
+    std::vector<std::vector<float>> temperatureField = {};
+    std::vector<std::vector<float>> domain = {}; //spatial dimensions (y extent) X (x extent)
+    float m = 0;    //interior dimension
+    float n = 0;    //interior dimension
+    float delta_x = 0;
+    float delta_y = 0;
     float timeStep = 0.01f;
-    float collisionElasticity = .5f;
-    bool shouldSimulate = true;
+    float thermalDiffusivity = 0.1f;
+
+    float currentTime = 0;
+    bool shouldSimulate = false;
     bool realDeltaTime = true;
-    std::list<Rigidbody_Cube*> cubes;
-    std::list<std::tuple<Rigidbody_Cube*, Rigidbody_Cube*>> detectedCollisions = {};
+
+    std::vector<float> drawnTemperatureValues {};
 
     glm::mat4 cameraMatrix = glm::mat4(1);
     glm::vec3 camPos = glm::vec3(0);
@@ -42,8 +48,7 @@ public:
     glm::vec3 right = glm::vec3(0, 1, 0);
     glm::vec3 up = glm::vec3(0, 0, 1);
 
-    void simStep(float timeStep);
-    void addForce(Rigidbody_Cube *cube, glm::vec3 pos, glm::vec3 force);    //pos im local space
+    void getTemperatureFieldToDraw();
 };
 
 inline std::ostream& operator << (std::ostream& os, const glm::vec3& v) {

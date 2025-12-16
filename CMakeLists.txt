@@ -87,14 +87,10 @@ add_executable(Template
 	src/PathFinder.cpp
 		Scenes/Scene1.cpp
 		Scenes/Scene1.h
-		Scenes/Rigidbody_Cube.cpp
-		Scenes/Rigidbody_Cube.h
-        Scenes/Scene2.cpp
-        Scenes/Scene2.h
-		Scenes/Scene3.cpp
-		Scenes/Scene3.h
-		Scenes/Scene4.cpp
-		Scenes/Scene4.h
+		Scenes/Calculations.cpp
+		Scenes/Calculations.h
+		Scenes/Scene2.cpp
+		Scenes/Scene2.h
 )
 
 if(UNIX AND NOT APPLE)

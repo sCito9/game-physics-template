@@ -1,18 +1,16 @@
 //
-// Created by tonib on 29.11.2025.
+// Created by tonib on 14.12.2025.
 //
 
 #ifndef SCENE2_H
 #define SCENE2_H
 #include "Scene.h"
-#include "glm/detail/qualifier.hpp"
 
 
-class Scene2 : public Scene {
+class Scene2 : public Scene{
     void init() override;
-    void simulateStep() override;
     void onGUI() override;
-    void handleInput(Rigidbody_Cube* cube);
+    void simulateStep() override;
 };
 
 

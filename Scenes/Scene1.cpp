@@ -1,54 +1,31 @@
 //
-// Created by tonib on 28.11.2025.
+// Created by tonib on 14.12.2025.
 //
 
-#include <glm/gtc/constants.hpp>
-
 #include "Scene1.h"
-
+#include "Calculations.h"
+#include "imgui.h"
 
 void Scene1::init() {
-    glm::mat3 initialRotation = glm::mat3(cos(glm::pi<float>() / 2), -sin(glm::pi<float>() / 2), 0,
-                                        sin(glm::pi<float>() / 2), cos(glm::pi<float>() /2), 0,
-                                        0, 0, 1);
-    cubes.emplace_back(new Rigidbody_Cube({0, 0, 0}, glm::toQuat(initialRotation), {0, 0, 0}, 2*1.f, 2*0.6f, 2*0.5f, 2));
-    cubes.front()->ForcePosQueue.push_back(glm::vec3(0.3f, 0.5f, 0.25f));
-    cubes.front()->ForceDirQueue.push_back(glm::vec3(1, 1, 0));
+    domain = {{0, 2}, {0, 4}};
+    m = 3;
+    n = 6;
+    temperatureField = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 6, 5, 1, -1, -2, -1, 0},
+        {0, 4, 3, 0, -1, -3, -1, 0},
+        {0, 3, 2, -1, -2, -4, -2, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0}
+    };
+    thermalDiffusivity = 0.1f;
+    timeStep = 0.1f;
 
-    printf("Positions:\n");
-    printf("Center of mass: x: %f, y: %f, z: %f\n", cubes.front()->cm_pos.x, cubes.front()->cm_pos.y, cubes.front()->cm_pos.z);
-    printf("Point_x: x: %f, y: %f, z: %f\n", getPoint_x_pos(cubes.front()).x, getPoint_x_pos(cubes.front()).y, getPoint_x_pos(cubes.front()).z);
+    delta_x = Calculations::calc_delta_x(domain, n);
+    delta_y = Calculations::calc_delta_y(domain, m);
 
-    printf("\n");
+    std::cout << "T_1,3:  " << temperatureField[1+1][3+1] << "\nT_0,3: " << temperatureField[0+1][3+1] << "\nT_0,5: " << temperatureField[0+1][5+1] << "\n" << std::endl;       //+1 jeweils, weil die auf dem Arbeitsblatt bei den inneren werten erst mit 0 angefangen haben zu zählen
+    std::cout << "delta_x: " << delta_x << "\ndelta_y: " << delta_y << "\n" << std::endl;
+    std::cout << "Simulating...\n" <<std::endl;
+    temperatureField = Calculations::calc_explicit_euler(timeStep, temperatureField, thermalDiffusivity, m, n, delta_x, delta_y);
+    std::cout << "T_1,3:  " << temperatureField[1+1][3+1] << "\nT_0,3: " << temperatureField[0+1][3+1] << "\nT_0,5: " << temperatureField[0+1][5+1] << "\n" << std::endl;}
 
-    printf("Velocity:\n");
-    printf("Center of mass: x: %f, y: %f, z: %f\n", cubes.front()->cm_linearVelocity.x, cubes.front()->cm_linearVelocity.y, cubes.front()->cm_linearVelocity.z);
-    printf("Point_x: x: %f, y: %f, z: %f\n", getPoint_x_vel(cubes.front()).x, getPoint_x_vel(cubes.front()).y, getPoint_x_vel(cubes.front()).z);
-
-    std::cout <<cubes.front()->I0_1[0] << cubes.front()->I0_1[1] << cubes.front()->I0_1[2] << std::endl;
-    std::cout <<cubes.front()->r.w <<","<< cubes.front()->r.x <<","<< cubes.front()->r.y <<","<< cubes.front()->r.z << std::endl;
-
-    printf("\n");
-    printf("Simulating........\n");
-    simStep(2);
-    printf("\n");
-
-    printf("Positions:\n");
-    printf("Center of mass: x: %f, y: %f, z: %f\n", cubes.front()->cm_pos.x, cubes.front()->cm_pos.y, cubes.front()->cm_pos.z);
-    printf("Point_x: x: %f, y: %f, z: %f\n", getPoint_x_pos(cubes.front()).x, getPoint_x_pos(cubes.front()).y, getPoint_x_pos(cubes.front()).z);
-
-    printf("\n");
-
-    printf("Velocity:\n");
-    printf("Center of mass: x: %f, y: %f, z: %f\n", cubes.front()->cm_linearVelocity.x, cubes.front()->cm_linearVelocity.y, cubes.front()->cm_linearVelocity.z);
-    printf("Point_x: x: %f, y: %f, z: %f\n", getPoint_x_vel(cubes.front()).x, getPoint_x_vel(cubes.front()).y, getPoint_x_vel(cubes.front()).z);
-    std::cout <<cubes.front()->r.w <<","<< cubes.front()->r.x <<","<< cubes.front()->r.y <<","<< cubes.front()->r.z << std::endl;
-}
-
-glm::vec3 Scene1::getPoint_x_pos(Rigidbody_Cube* cube) {
-    return cube->cm_pos + (glm::mat3_cast(glm::normalize(cube->r)) * glm::vec3(0.3f, 0.5f, 0.25f));
-}
-
-glm::vec3 Scene1::getPoint_x_vel(Rigidbody_Cube* cube) {
-    return cube->cm_linearVelocity + glm::cross(cube->angularVelocity, glm::vec3(0.3f, 0.5f, 0.25f));
-}

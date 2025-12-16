@@ -1,5 +1,5 @@
 //
-// Created by tonib on 28.11.2025.
+// Created by tonib on 14.12.2025.
 //
 
 #ifndef SCENE1_H
@@ -8,9 +8,8 @@
 
 
 class Scene1 : public Scene {
-void init() override;
-    glm::vec3 getPoint_x_pos(Rigidbody_Cube* cube);
-    glm::vec3 getPoint_x_vel(Rigidbody_Cube* cube);
+
+    void init() override;
 };
 
 
