@@ -40,8 +40,8 @@ void PDE_Interactive_Simulation::onGUI()
     bool domainChanged = ImGui::InputFloat2("Domain Extent: ", domain_extent);
     if (domainChanged)
     {
-        delta_x = domain_extent[0] / (M[0].size());
-        delta_y = domain_extent[1] / (M.size());
+        delta_x = domain_extent[0] / (M[0].size() - 1);
+        delta_y = domain_extent[1] / (M.size() - 1);
 
         a_x = (v * delta_t) / glm::pow(delta_x, 2);
         a_y = (v * delta_t) / glm::pow(delta_y, 2);
@@ -289,8 +289,8 @@ void PDE_Interactive_Simulation::initializeMatrix(int rows, int columns, glm::ve
     {
         row.resize(columns, 0.0f);
     }
-    delta_x = domain.x / (float)columns;
-    delta_y = domain.y / (float)rows;
+    delta_x = domain.x / (float)columns - 1.f;
+    delta_y = domain.y / (float)rows - 1.f;
     initializeRandomNoise();
 
     //implicit stuff

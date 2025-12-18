@@ -11,8 +11,8 @@ class PDE_Single_Step : public Scene
 {
     const float v = 0.1f;
     const float delta_t = 0.1f;
-    const float delta_x = 0.4f / (6 + 1);
-    const float delta_y = 0.2f / (3 + 1);
+    const float delta_x = 4.f / (8 - 1);
+    const float delta_y = 2.f / (5 - 1);
     std::vector<std::vector<float>> M = {
         {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f},
         {0.f, 6.f, 5.f, 1.f, -1.f, -2.f, -1.f, 0.f},

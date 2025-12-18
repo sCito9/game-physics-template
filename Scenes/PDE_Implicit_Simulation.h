@@ -35,8 +35,8 @@ class PDE_Implicit_Simulation : public Scene
         {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f}
     };
 
-    const float delta_x = 0.1f / (16 + 2);
-    const float delta_y = 0.1f / (16 + 2);
+    const float delta_x = 1.f / (18 - 1);
+    const float delta_y = 1.f / (18 - 1);
 
     SparsePCGSolver<float> sparse_solver = SparsePCGSolver<float>();
     SparseMatrix<float> sparse_matrix;
