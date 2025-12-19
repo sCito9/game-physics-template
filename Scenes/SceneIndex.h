@@ -1,10 +1,10 @@
 #include "Scene.h"
 #include <map>
 
-#include "Scenes/Ex2/Scene_1.h"
-#include "Scenes/Ex2/Scene_2.h"
-#include "Scenes/Ex2/Scene_3.h"
-#include "Scenes/Ex2/Scene_4.h"
+#include "Scenes/Ex3/Scene_01.h"
+#include "Scenes/Ex3/Scene_02.h"
+#include "Scenes/Ex3/Scene_03.h"
+#include "Scenes/Ex3/Scene_04.h"
 
 using SceneCreator = std::function<std::unique_ptr<Scene>()>;
 
@@ -16,17 +16,8 @@ SceneCreator creator()
 }
 
 std::map<std::string, SceneCreator> scenesCreators = {
-    //{"Demo Scene", creator<Scene01>()},
-    //{"Demo Scene 2", creator<Scene02>()},
-        // add more Scene types here
-        /*
-    {"Single Step", creator<Scene1>()},
-    {"Euler Simulation", creator<Scene2>()},
-    {"Midpoint Simulation", creator<Scene3>()},
-    {"Complex Simulation", creator<Scene4>()},
-         */
-    {"Single Step", creator<Scene_1>()},
-    {"Simulation", creator<Scene_2>()},
-    {"Collision", creator<Scene_3>()},
-    {"Complex", creator<Scene_4>()},
+    {"Single Step", creator<Scene_01>()},
+    {"Explicit Simulation", creator<Scene_02>()},
+    {"Implicit Simulation", creator<Scene_03>()},
+    {"Interactive Simulation", creator<Scene_04>()},
 };

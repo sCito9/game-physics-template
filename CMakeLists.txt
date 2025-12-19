@@ -90,6 +90,9 @@ add_executable(Template
 		Scenes/Ex2/Scene_2.h
 		Scenes/Ex2/Scene_3.h
 		Scenes/Ex2/Scene_4.h
+		Scenes/Ex3/Scene_01.h
+		Scenes/Ex3/Scene_04.h
+		Scenes/Ex3/Heat.cpp
 )
 
 if(UNIX AND NOT APPLE)
