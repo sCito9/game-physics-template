@@ -29,8 +29,8 @@ public:
 
     std::vector<std::vector<float>> temperatureField = {};
     std::vector<std::vector<float>> domain = {}; //spatial dimensions (y extent) X (x extent)
-    float m = 0;    //interior dimension
-    float n = 0;    //interior dimension
+    int m = 0;    //interior dimension
+    int n = 0;    //interior dimension
     float delta_x = 0;
     float delta_y = 0;
     float timeStep = 0.01f;
@@ -47,6 +47,8 @@ public:
     glm::vec3 fwd = glm::vec3(1, 0, 0);
     glm::vec3 right = glm::vec3(0, 1, 0);
     glm::vec3 up = glm::vec3(0, 0, 1);
+    int windowHeight;
+    int windowWidth;
 
     void getTemperatureFieldToDraw();
 };

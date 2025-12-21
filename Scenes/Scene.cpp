@@ -14,6 +14,9 @@ void Scene::onDraw(Renderer &renderer)
     right = inverse(cameraMatrix) * glm::vec4(1, 0, 0, 0);
     up = inverse(cameraMatrix) * glm::vec4(0, 1, 0, 0);
 
+    windowHeight = renderer.camera.height;
+    windowWidth = renderer.camera.width;
+
     //debug:
 }
 

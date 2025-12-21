@@ -9,11 +9,13 @@
 
 class Calculations {
     public:
-    static float calc_delta_x(std::vector<std::vector<float>> domain, float n);
-    static float calc_delta_y(std::vector<std::vector<float>> domain, float m);
-    static std::vector<std::vector<float>> calc_explicit_euler(float timestep, std::vector<std::vector<float>> temperatureField, float thermalDiffusivity, float m, float n, float delta_x, float delta_y);
-    static std::vector<std::vector<float>> calc_implicit_euler(float timestep, std::vector<std::vector<float>> temperatureField, float thermalDiffusivity, float m, float n, float delta_x, float delta_y);
-    static std::vector<std::vector<float>> initializeTemperatureField(float m, float n);
+    static float calc_delta_x(std::vector<std::vector<float>> domain, int n);
+    static float calc_delta_y(std::vector<std::vector<float>> domain, int m);
+    static std::vector<std::vector<float>> calc_explicit_euler(float timestep, std::vector<std::vector<float>> temperatureField, float thermalDiffusivity, int m, int n, float delta_x, float delta_y);
+    static std::vector<std::vector<float>> calc_implicit_euler(float timestep, std::vector<std::vector<float>> temperatureField, float thermalDiffusivity, int m, int n, float delta_x, float delta_y);
+    static std::vector<std::vector<float>> initializeTemperatureField(int m, int n);
+    static std::vector<std::vector<float>> resizeTemperatureField(std::vector<std::vector<float>> oldTemperatureField, int new_m, int new_n);
+    static std::vector<std::vector<float>> coolerResizeTemperatureField(std::vector<std::vector<float> > oldTemperatureField, int new_m, int new_n, bool* variety);
 };
 
 
