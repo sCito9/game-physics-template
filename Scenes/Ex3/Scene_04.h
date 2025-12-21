@@ -15,6 +15,7 @@ class Scene_04 : public Scene {
 
     float deltaT = 0.01f;
     float curDeltaT = 0.f;
+    bool realTime = true;
     int paused = true;
     float speed = 1.f;
     float inputHeat = 0.3f;

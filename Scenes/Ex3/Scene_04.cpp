@@ -10,6 +10,11 @@ void Scene_04::onDraw(Renderer &renderer) {
 
 void Scene_04::simulateStep() {
     if (paused || deltaT <= 0.f) return;
+
+    if (!realTime) {
+        (T_t.*Scene_04::stepFunc)();
+        return;
+    }
     float realtimeDt = ImGui::GetIO().DeltaTime * speed;
 
     curDeltaT += realtimeDt;
@@ -28,44 +33,52 @@ void Scene_04::onGUI() {
         stepFunc = &Heat::implicitEuler;
     }
 
-    ImGui::LabelText("Info", "[Space] to (un-)pause sim");
+    ImGui::LabelText("Info", "[Space] to %sPAUSE sim\nRandbedingungen mitgerendert",  paused ? "UN" : "");
     if (ImGui::IsKeyPressed(ImGuiKey_Space)) {
         paused = !paused;
     }
-    ImGui::InputFloat("sim speed", &speed);
-    if (ImGui::InputFloat("delta t in s", &deltaT)) {
+    if (ImGui::Button("reinitialize")) {
+        T_t.initializeHeatFieldAsGaussianBlob();
+        paused = true;
+    }
+    if (ImGui::InputFloat("delta t in s", &deltaT, 0, 0, "%.5f")) {
         T_t.delta_t = deltaT;
     }
+    ImGui::Checkbox("use real time", &realTime);
+    ImGui::InputFloat("sim speed\nreal time", &speed);
 
-    ImGui::InputFloat("heat on rclick", &inputHeat);
-    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+    ImGui::InputFloat("heat on\nright click", &inputHeat);
+    if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
         ImVec2 mPos = ImGui::GetMousePos();
         ImVec2 size = ImGui::GetIO().DisplaySize;
-        float j = (mPos.x / size.x);
-        float i = (mPos.y / size.y);
-        std::cout << i << ", " << j << std::endl;
 
-        if (i < 0 || i > 1 || j < 0 || j > 1) return;
+        float j_rel = (mPos.x / size.x);
+        auto j = (int)(j_rel * (float)n);
 
-        T_t((int)(i * (float)m), (int)(j * (float)n)) = inputHeat;
+        float i_rel = (mPos.y / size.y);
+        auto i = (int)(i_rel * (float)m);
+
+        if (i <= 0 || i >= m - 1 || j <= 0 || j >= n - 1) return;
+
+        T_t(i, j) = inputHeat;
     }
 
-    ImGui::InputFloat("visc. ny", &T_t.ny);
+    ImGui::InputFloat("diffusivity\nny", &T_t.ny);
     if (ImGui::InputFloat("extent x", &width)) {
         T_t.setX(width);
     }
     if (ImGui::InputFloat("extent y", &height)) {
         T_t.setY(height);
     }
-    int newM = (int)m;
-    if (ImGui::InputInt("res m", &newM)) {
-        T_t.setM(newM);
-        m = newM;
+    int newM = (int)m - 2; // anzeige ohne randbed.
+    if (ImGui::SliderInt("res m", &newM, 3, 665)) {
+        m = newM + 2;
+        T_t.setM(m);
     }
-    int newN = (int)n;
-    if (ImGui::InputInt("res n", &newN)) {
-        T_t.setN(newN);
-        n = newN;
+    int newN = (int)n - 2;
+    if (ImGui::SliderInt("res n", &newN, 3, 665)) {
+        n = newN + 2;
+        T_t.setN(n);
     }
 }
 

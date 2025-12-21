@@ -35,7 +35,6 @@ private:
     float sig_x;
     float sig_y;
 
-    void initializeHeatFieldAsGaussianBlob();
 
 public:
     /// @brief discrete step size in time
@@ -57,6 +56,8 @@ public:
     void implicitEuler();
 
     void viz(Renderer& renderer);
+
+    void initializeHeatFieldAsGaussianBlob();
 
     void setM(uint32_t mNew) {
         size = mNew * n;

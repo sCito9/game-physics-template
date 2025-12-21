@@ -26,9 +26,9 @@ void Heat::implicitEuler() {
 
     auto A = SparseMatrix<float>((int)size, 5);
 
-    float r_x = ny * delta_t / (delta_x * delta_x);
-    float r_y = ny * delta_t / (delta_y * delta_y);
-    float d = 1.0f + 2 * r_x + 2 * r_y;
+    float lambda_x = ny * delta_t / (delta_x * delta_x);
+    float lambda_y = ny * delta_t / (delta_y * delta_y);
+    float diag = 1.0f + 2 * lambda_x + 2 * lambda_y;
 
     for (int i = 1, j = 1, k = (int)n + 1; k < size - (n + 1); k++, j++) {
         if (j >= n) {
@@ -43,11 +43,11 @@ void Heat::implicitEuler() {
             continue;
         }
 
-        A.set_element(k, k, d);
-        A.set_element(k, k - 1, -r_x);
-        A.set_element(k, k + 1, -r_x);
-        A.set_element(k, k - n, -r_y);
-        A.set_element(k, k + n, -r_y);
+        A.set_element(k, k, diag);
+        A.set_element(k, k - 1, -lambda_y);
+        A.set_element(k, k + 1, -lambda_y);
+        A.set_element(k, k - n, -lambda_x);
+        A.set_element(k, k + n, -lambda_x);
     }
 
     for (int k = 0; k < n + 1; k++) {
@@ -55,7 +55,9 @@ void Heat::implicitEuler() {
         A.set_element((int)size - k - 1, (int)size - k - 1, 1);
     }
 
-    solver.solve(A, T, T_buffer, residuum, nIter);
+    if (!solver.solve(A, T, T_buffer, residuum, nIter)) {
+        std::cout << "Solver not successful. res=" << residuum << ", nIter=" << nIter << std::endl;
+    }
 
     std::swap(T, T_buffer);
 }
@@ -64,8 +66,8 @@ void Heat::initializeHeatFieldAsGaussianBlob() {
     float x0 = 0.5f * x;
     float y0 = 0.5f * y;
 
-    for (int j = 1; j < n; ++j) {
-        for (int i = 1; i < m; ++i) {
+    for (int j = 1; j < n; j++) {
+        for (int i = 1; i < m; i++) {
             float x_cur = (float) j * delta_x;
             float y_cur = (float) i * delta_y;
             T[n * i + j] = /* Amplitude */ 1.0f * std::exp(
