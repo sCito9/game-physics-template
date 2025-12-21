@@ -60,6 +60,8 @@ void Heat::implicitEuler() {
     }
 
     std::swap(T, T_buffer);
+
+    if (guaranteeBoundary) cleanBoundary();
 }
 
 void Heat::initializeHeatFieldAsGaussianBlob() {
@@ -78,7 +80,20 @@ void Heat::initializeHeatFieldAsGaussianBlob() {
     }
 }
 
+void Heat::cleanBoundary() {
+    memset(T.data(), 0, n * sizeof(float));
+    memset(T.data() + n * (m - 1), 0, n * sizeof(float));
+    for (int i = 1; i < m - 1; i++) {
+        for (int j = 0; j < n; j++) {
+            if (j == 0 || j == n - 1) {
+                T[n * i + j] = 0;
+            }
+        }
+    }
+}
+
 void Heat::viz(Renderer &renderer) {
     renderer.drawImage(T, (int)m, (int)n);
 }
+
 

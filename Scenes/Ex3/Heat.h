@@ -35,12 +35,15 @@ private:
     float sig_x;
     float sig_y;
 
+    void cleanBoundary();
 
 public:
     /// @brief discrete step size in time
     float delta_t;
     /// @brief viscosity factor ν
     float ny;
+
+    bool guaranteeBoundary = true;
 
     float& operator()(uint32_t i, uint32_t j) {
         assert(i < m && j < n);

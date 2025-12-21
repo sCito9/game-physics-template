@@ -34,6 +34,8 @@ void Scene_03::onGUI() {
     ImGui::Checkbox("use real time", &realTime);
     ImGui::InputFloat("sim speed\nreal time", &speed);
     ImGui::InputFloat("diffusivity\nny", &T_t.ny);
+    ImGui::Checkbox("guarantee Dirichlet\nboundary conditions", &T_t.guaranteeBoundary);
+
 }
 
 Scene_03::Scene_03() : width(1.0f), height(1.0f), n(18), m(18) {

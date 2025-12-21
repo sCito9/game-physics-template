@@ -24,6 +24,11 @@ void Scene_04::simulateStep() {
 }
 
 void Scene_04::onGUI() {
+    ImGui::LabelText("Info", "[Space] to %sPAUSE sim\nRandbedingungen mitgerendert",  paused ? "UN" : "");
+    if (ImGui::IsKeyPressed(ImGuiKey_Space)) {
+        paused = !paused;
+    }
+
     if (ImGui::Selectable("Explicit", scheme == explic)) {
         scheme = explic;
         stepFunc = &Heat::explicitEuler;
@@ -32,11 +37,8 @@ void Scene_04::onGUI() {
         scheme = implic;
         stepFunc = &Heat::implicitEuler;
     }
+    ImGui::Checkbox("[implicit only]\nguarantee Dirichlet\nboundary conditions", &T_t.guaranteeBoundary);
 
-    ImGui::LabelText("Info", "[Space] to %sPAUSE sim\nRandbedingungen mitgerendert",  paused ? "UN" : "");
-    if (ImGui::IsKeyPressed(ImGuiKey_Space)) {
-        paused = !paused;
-    }
     if (ImGui::Button("reinitialize")) {
         T_t.initializeHeatFieldAsGaussianBlob();
         paused = true;
